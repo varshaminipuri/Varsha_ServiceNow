@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_user_role_contains">
+  <sys_user_role_contains action="INSERT_OR_UPDATE">
+    <sys_id>81677066dfc24149b67e68cb94b99e10</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sys_user_role_contains_81677066dfc24149b67e68cb94b99e10</sys_update_name>
+    <contains name="x_2097092_linq.college_admin">fe665c2483d34f0ba99a278e185fcabd</contains>
+    <role name="x_2097092_linq.platform_admin">c024e27fe5014dd5bec40d0e7e444512</role>
+  </sys_user_role_contains>
+</record_update>

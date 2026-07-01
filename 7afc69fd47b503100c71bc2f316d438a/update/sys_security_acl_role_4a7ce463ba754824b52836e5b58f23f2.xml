@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl_role">
+  <sys_security_acl_role action="INSERT_OR_UPDATE">
+    <sys_id>4a7ce463ba754824b52836e5b58f23f2</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sys_security_acl_role_4a7ce463ba754824b52836e5b58f23f2</sys_update_name>
+    <sys_security_acl>948f67ae30e94b209f2591a25cdd10fa</sys_security_acl>
+    <sys_user_role name="x_2097092_linq.student">4e665ba85912475390e79fafe2a56856</sys_user_role>
+  </sys_security_acl_role>
+</record_update>

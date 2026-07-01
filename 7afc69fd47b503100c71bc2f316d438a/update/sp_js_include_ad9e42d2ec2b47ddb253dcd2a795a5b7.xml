@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_js_include">
+  <sp_js_include action="INSERT_OR_UPDATE">
+    <sys_id>ad9e42d2ec2b47ddb253dcd2a795a5b7</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sp_js_include_ad9e42d2ec2b47ddb253dcd2a795a5b7</sys_update_name>
+    <display_name>qrcode.js CDN</display_name>
+    <source>url</source>
+    <sys_ui_script/>
+    <url>https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js</url>
+  </sp_js_include>
+</record_update>

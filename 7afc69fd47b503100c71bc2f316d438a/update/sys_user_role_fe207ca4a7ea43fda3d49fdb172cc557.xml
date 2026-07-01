@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_user_role">
+  <sys_user_role action="INSERT_OR_UPDATE">
+    <sys_id>fe207ca4a7ea43fda3d49fdb172cc557</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sys_user_role_fe207ca4a7ea43fda3d49fdb172cc557</sys_update_name>
+    <assignable_by/>
+    <can_delegate>true</can_delegate>
+    <description>Manage club, create events</description>
+    <elevated_privilege>false</elevated_privilege>
+    <grantable>true</grantable>
+    <name>x_2097092_linq.club_admin</name>
+    <scoped_admin>false</scoped_admin>
+    <suffix>club_admin</suffix>
+  </sys_user_role>
+</record_update>

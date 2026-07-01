@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl">
+  <sys_security_acl action="INSERT_OR_UPDATE">
+    <sys_id>b0efa43629464a819b7f25f3186a14d2</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sys_security_acl_b0efa43629464a819b7f25f3186a14d2</sys_update_name>
+    <active>true</active>
+    <admin_overrides>true</admin_overrides>
+    <advanced>true</advanced>
+    <applies_to/>
+    <condition/>
+    <decision_type>allow</decision_type>
+    <description>College WRITE: platform_admin full, college_admin own college only</description>
+    <local_or_existing>Local</local_or_existing>
+    <name>x_2097092_linq_college</name>
+    <operation>write</operation>
+    <script><![CDATA[
+    if (gs.hasRole('x_2097092_linq.platform_admin')) {
+      answer = true;
+    } else {
+      // College admin can only write their own college
+      var userCollege = gs.getUser().getRecord().getValue('u_college');
+      answer = (current.getUniqueValue() == userCollege);
+    }
+  ]]></script>
+    <security_attribute/>
+    <type>record</type>
+  </sys_security_acl>
+</record_update>

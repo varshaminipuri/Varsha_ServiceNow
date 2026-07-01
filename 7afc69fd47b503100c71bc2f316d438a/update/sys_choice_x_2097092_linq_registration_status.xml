@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="status" table="x_2097092_linq_registration">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>1445043b2fc74d199a4f743ad4572b1a</sys_id>
+      <name>x_2097092_linq_registration</name>
+      <element>status</element>
+      <label>Registered</label>
+      <value>registered</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>1fa671f395fa4a779118ea1f50dcc21b</sys_id>
+      <name>x_2097092_linq_registration</name>
+      <element>status</element>
+      <label>Checked In</label>
+      <value>checked_in</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>ba3d31a28a5b4dc4bb6de82114cb5f0a</sys_id>
+      <name>x_2097092_linq_registration</name>
+      <element>status</element>
+      <label>Cancelled</label>
+      <value>cancelled</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>ed281ca2e110420c9e58693b4213f636</sys_id>
+      <name>x_2097092_linq_registration</name>
+      <element>status</element>
+      <label>Waitlisted</label>
+      <value>waitlisted</value>
+      <sequence>3</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>0b1aa376a6b74a7cbba051114ba99a74</sys_id>
+      <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+      <name>x_2097092_linq_registration</name>
+      <element>status</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>

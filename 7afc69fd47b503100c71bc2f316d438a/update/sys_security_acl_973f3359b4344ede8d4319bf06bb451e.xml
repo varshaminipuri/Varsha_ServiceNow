@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl">
+  <sys_security_acl action="INSERT_OR_UPDATE">
+    <sys_id>973f3359b4344ede8d4319bf06bb451e</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sys_security_acl_973f3359b4344ede8d4319bf06bb451e</sys_update_name>
+    <active>true</active>
+    <admin_overrides>true</admin_overrides>
+    <advanced>true</advanced>
+    <applies_to/>
+    <condition/>
+    <decision_type>allow</decision_type>
+    <description>Club READ: platform_admin full, college_admin own college clubs, club_admin/member via membership</description>
+    <local_or_existing>Local</local_or_existing>
+    <name>x_2097092_linq_club</name>
+    <operation>read</operation>
+    <script><![CDATA[
+    if (gs.hasRole('x_2097092_linq.platform_admin')) {
+      answer = true;
+    } else if (gs.hasRole('x_2097092_linq.college_admin')) {
+      // College admin reads clubs belonging to their college
+      var userCollege = gs.getUser().getRecord().getValue('u_college');
+      answer = (current.getValue('college') == userCollege);
+    } else {
+      // club_admin and club_member: read clubs where they have active membership
+      var gr = new GlideRecord('x_2097092_linq_club_membership');
+      gr.addQuery('member', gs.getUserID());
+      gr.addQuery('club', current.getUniqueValue());
+      gr.addQuery('status', 'active');
+      gr.query();
+      answer = gr.hasNext();
+    }
+  ]]></script>
+    <security_attribute/>
+    <type>record</type>
+  </sys_security_acl>
+</record_update>

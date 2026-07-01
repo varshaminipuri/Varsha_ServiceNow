@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl_role">
+  <sys_security_acl_role action="INSERT_OR_UPDATE">
+    <sys_id>e115001cec8541f1a142f030b87361f1</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sys_security_acl_role_e115001cec8541f1a142f030b87361f1</sys_update_name>
+    <sys_security_acl>b0efa43629464a819b7f25f3186a14d2</sys_security_acl>
+    <sys_user_role name="x_2097092_linq.college_admin">fe665c2483d34f0ba99a278e185fcabd</sys_user_role>
+  </sys_security_acl_role>
+</record_update>

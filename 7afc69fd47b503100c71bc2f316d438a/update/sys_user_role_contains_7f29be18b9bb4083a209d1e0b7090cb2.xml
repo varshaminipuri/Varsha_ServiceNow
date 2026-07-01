@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_user_role_contains">
+  <sys_user_role_contains action="INSERT_OR_UPDATE">
+    <sys_id>7f29be18b9bb4083a209d1e0b7090cb2</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sys_user_role_contains_7f29be18b9bb4083a209d1e0b7090cb2</sys_update_name>
+    <contains name="x_2097092_linq.student">4e665ba85912475390e79fafe2a56856</contains>
+    <role name="x_2097092_linq.club_member">bb3b9ec64fe34cf89d3d288d558ed745</role>
+  </sys_user_role_contains>
+</record_update>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_widget_dependency">
+  <m2m_sp_widget_dependency action="INSERT_OR_UPDATE">
+    <sys_id>b257509f51d64017a5feb81fad749427</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>m2m_sp_widget_dependency_b257509f51d64017a5feb81fad749427</sys_update_name>
+    <sp_dependency>d4e48cdece2e468aaf88be7f4cb7cb8e</sp_dependency>
+    <sp_widget>810af613e44741138e2693dcd559bb0d</sp_widget>
+  </m2m_sp_widget_dependency>
+</record_update>

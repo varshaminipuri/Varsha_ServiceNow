@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_dependency_js_include">
+  <m2m_sp_dependency_js_include action="INSERT_OR_UPDATE">
+    <sys_id>0f85d83b867a4fb9928b4f82d50aff48</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>m2m_sp_dependency_js_include_0f85d83b867a4fb9928b4f82d50aff48</sys_update_name>
+    <order>100</order>
+    <sp_dependency>6c1f6a84c6c941ffb9ba7ee7bf688199</sp_dependency>
+    <sp_js_include>ad9e42d2ec2b47ddb253dcd2a795a5b7</sp_js_include>
+  </m2m_sp_dependency_js_include>
+</record_update>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl">
+  <sys_security_acl action="INSERT_OR_UPDATE">
+    <sys_id>74d679b2eb6f4b13acdaa40689ea368e</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sys_security_acl_74d679b2eb6f4b13acdaa40689ea368e</sys_update_name>
+    <active>true</active>
+    <admin_overrides>true</admin_overrides>
+    <advanced>true</advanced>
+    <applies_to/>
+    <condition/>
+    <decision_type>allow</decision_type>
+    <description>College READ: platform_admin full, college_admin own college, student verified colleges</description>
+    <local_or_existing>Local</local_or_existing>
+    <name>x_2097092_linq_college</name>
+    <operation>read</operation>
+    <script><![CDATA[
+    if (gs.hasRole('x_2097092_linq.platform_admin')) {
+      answer = true;
+    } else if (gs.hasRole('x_2097092_linq.college_admin')) {
+      // College admin reads only their own college
+      var userCollege = gs.getUser().getRecord().getValue('u_college');
+      answer = (current.getUniqueValue() == userCollege);
+    } else {
+      // Students can read active/verified colleges
+      answer = (current.getValue('active') == 'true');
+    }
+  ]]></script>
+    <security_attribute/>
+    <type>record</type>
+  </sys_security_acl>
+</record_update>

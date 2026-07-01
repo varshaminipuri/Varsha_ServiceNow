@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="status" table="x_2097092_linq_event">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>a530598c17d8460ea2212d3fa64480a6</sys_id>
+      <name>x_2097092_linq_event</name>
+      <element>status</element>
+      <label>Draft</label>
+      <value>draft</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>00028a669f4d4d98af6a28bb799c5ed0</sys_id>
+      <name>x_2097092_linq_event</name>
+      <element>status</element>
+      <label>Submitted</label>
+      <value>submitted</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>4fddd11886e446379ff9fd008e9a34ea</sys_id>
+      <name>x_2097092_linq_event</name>
+      <element>status</element>
+      <label>Approved</label>
+      <value>approved</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>acc2de2b3d55497a87be1a3eca1a434a</sys_id>
+      <name>x_2097092_linq_event</name>
+      <element>status</element>
+      <label>Live</label>
+      <value>live</value>
+      <sequence>3</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>15a0139a93ec4a6083461f3de1c88d2d</sys_id>
+      <name>x_2097092_linq_event</name>
+      <element>status</element>
+      <label>Completed</label>
+      <value>completed</value>
+      <sequence>4</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>95097dd27943484695c8757e341770c5</sys_id>
+      <name>x_2097092_linq_event</name>
+      <element>status</element>
+      <label>Cancelled</label>
+      <value>cancelled</value>
+      <sequence>5</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>07f31a35acda453e8abc7498fedc1cf6</sys_id>
+      <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+      <name>x_2097092_linq_event</name>
+      <element>status</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>

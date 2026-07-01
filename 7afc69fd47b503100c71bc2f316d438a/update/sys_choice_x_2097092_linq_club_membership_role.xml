@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="role" table="x_2097092_linq_club_membership">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>267560854f7f467894988fff8a778d3c</sys_id>
+      <name>x_2097092_linq_club_membership</name>
+      <element>role</element>
+      <label>President</label>
+      <value>president</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>d1bd319af0214919a520bcbd5da410ed</sys_id>
+      <name>x_2097092_linq_club_membership</name>
+      <element>role</element>
+      <label>Vice President</label>
+      <value>vice_president</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>fb05a2da6fc04d01b27bbaa783329035</sys_id>
+      <name>x_2097092_linq_club_membership</name>
+      <element>role</element>
+      <label>Secretary</label>
+      <value>secretary</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>94197a523d004806bdb67ebdcbc586d9</sys_id>
+      <name>x_2097092_linq_club_membership</name>
+      <element>role</element>
+      <label>Treasurer</label>
+      <value>treasurer</value>
+      <sequence>3</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>d3521189305c4b14b8a4fc19641d9f14</sys_id>
+      <name>x_2097092_linq_club_membership</name>
+      <element>role</element>
+      <label>Member</label>
+      <value>member</value>
+      <sequence>4</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>c9370690b4f448a0a3e8acffc4fa8db2</sys_id>
+      <name>x_2097092_linq_club_membership</name>
+      <element>role</element>
+      <label>Faculty Coordinator</label>
+      <value>faculty_coordinator</value>
+      <sequence>5</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>f751b87a1de74a1989f029a8bf0ab767</sys_id>
+      <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+      <name>x_2097092_linq_club_membership</name>
+      <element>role</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>

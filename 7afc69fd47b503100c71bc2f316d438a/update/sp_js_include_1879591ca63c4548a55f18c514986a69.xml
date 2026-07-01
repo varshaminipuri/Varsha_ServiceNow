@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_js_include">
+  <sp_js_include action="INSERT_OR_UPDATE">
+    <sys_id>1879591ca63c4548a55f18c514986a69</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sp_js_include_1879591ca63c4548a55f18c514986a69</sys_update_name>
+    <display_name>html5-qrcode CDN</display_name>
+    <source>url</source>
+    <sys_ui_script/>
+    <url>https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js</url>
+  </sp_js_include>
+</record_update>

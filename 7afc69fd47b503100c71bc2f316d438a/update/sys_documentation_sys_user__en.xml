@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_documentation">
+  <sys_documentation action="INSERT_OR_UPDATE">
+    <sys_id>31b53b9c694449cea9e692eefb2e2940</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sys_documentation_sys_user__en</sys_update_name>
+    <element/>
+    <label>sys_user</label>
+    <language>en</language>
+    <name>sys_user</name>
+    <plural>sys_users</plural>
+  </sys_documentation>
+</record_update>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl">
+  <sys_security_acl action="INSERT_OR_UPDATE">
+    <sys_id>facc98b55ef54c6fb5bd5e909412210a</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sys_security_acl_facc98b55ef54c6fb5bd5e909412210a</sys_update_name>
+    <active>true</active>
+    <admin_overrides>true</admin_overrides>
+    <advanced>true</advanced>
+    <applies_to/>
+    <condition/>
+    <decision_type>allow</decision_type>
+    <description>Event READ: platform_admin full, college_admin own college, club members their clubs, students live events only</description>
+    <local_or_existing>Local</local_or_existing>
+    <name>x_2097092_linq_event</name>
+    <operation>read</operation>
+    <script><![CDATA[
+    if (gs.hasRole('x_2097092_linq.platform_admin')) {
+      answer = true;
+    } else if (gs.hasRole('x_2097092_linq.college_admin')) {
+      // College admin reads events of their college
+      var userCollege = gs.getUser().getRecord().getValue('u_college');
+      answer = (current.getValue('college') == userCollege);
+    } else if (gs.hasRole('x_2097092_linq.club_admin') || gs.hasRole('x_2097092_linq.club_member')) {
+      // club_admin/club_member: read events of clubs they belong to
+      var gr = new GlideRecord('x_2097092_linq_club_membership');
+      gr.addQuery('member', gs.getUserID());
+      gr.addQuery('club', current.getValue('club'));
+      gr.addQuery('status', 'active');
+      gr.query();
+      if (gr.hasNext()) {
+        answer = true;
+      } else {
+        // Also allow if it is a live event they can see as student
+        var status = current.getValue('status');
+        if (status == 'live') {
+          var scope = current.getValue('college_scope');
+          if (scope == 'inter_college') {
+            answer = true;
+          } else {
+            var studentCollege = gs.getUser().getRecord().getValue('u_college');
+            answer = (current.getValue('college') == studentCollege);
+          }
+        } else {
+          answer = false;
+        }
+      }
+    } else {
+      // Students: read only live events filtered by college scope
+      var eventStatus = current.getValue('status');
+      if (eventStatus == 'live') {
+        var eventScope = current.getValue('college_scope');
+        if (eventScope == 'inter_college') {
+          // Inter-college events visible to all verified students
+          answer = true;
+        } else {
+          // College-only events filtered by user's college
+          var stuCollege = gs.getUser().getRecord().getValue('u_college');
+          answer = (current.getValue('college') == stuCollege);
+        }
+      } else {
+        answer = false;
+      }
+    }
+  ]]></script>
+    <security_attribute/>
+    <type>record</type>
+  </sys_security_acl>
+</record_update>

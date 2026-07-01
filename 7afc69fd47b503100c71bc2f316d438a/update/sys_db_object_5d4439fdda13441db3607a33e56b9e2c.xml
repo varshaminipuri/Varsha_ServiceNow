@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_db_object">
+  <sys_db_object action="INSERT_OR_UPDATE">
+    <sys_id>5d4439fdda13441db3607a33e56b9e2c</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sys_db_object_5d4439fdda13441db3607a33e56b9e2c</sys_update_name>
+    <access>public</access>
+    <actions_access>false</actions_access>
+    <alter_access>false</alter_access>
+    <caller_access>0</caller_access>
+    <client_scripts_access>false</client_scripts_access>
+    <create_access>false</create_access>
+    <delete_access>false</delete_access>
+    <is_extendable>false</is_extendable>
+    <label/>
+    <live_feed_enabled>false</live_feed_enabled>
+    <name>sys_user</name>
+    <number_ref/>
+    <read_access>true</read_access>
+    <scriptable_table>false</scriptable_table>
+    <super_class/>
+    <update_access>false</update_access>
+    <ws_access>false</ws_access>
+  </sys_db_object>
+</record_update>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="category" table="x_2097092_linq_club">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>f74ffb8679fb4e398188fc5969484b26</sys_id>
+      <name>x_2097092_linq_club</name>
+      <element>category</element>
+      <label>Technical</label>
+      <value>technical</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>f24bec02ad4044698cf0edbbe3a16c4c</sys_id>
+      <name>x_2097092_linq_club</name>
+      <element>category</element>
+      <label>Cultural</label>
+      <value>cultural</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>8b9b1039ba1949d0b111c7318ac426fc</sys_id>
+      <name>x_2097092_linq_club</name>
+      <element>category</element>
+      <label>Sports</label>
+      <value>sports</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>b0c2b4fbde2b4327ab4c21875b4dff68</sys_id>
+      <name>x_2097092_linq_club</name>
+      <element>category</element>
+      <label>Social</label>
+      <value>social</value>
+      <sequence>3</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>b763420b0fec430590ef65742fec15d2</sys_id>
+      <name>x_2097092_linq_club</name>
+      <element>category</element>
+      <label>Academic</label>
+      <value>academic</value>
+      <sequence>4</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>fd887bfcc2b64ac68b3be687c7e672a9</sys_id>
+      <name>x_2097092_linq_club</name>
+      <element>category</element>
+      <label>Other</label>
+      <value>other</value>
+      <sequence>5</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>31a82d78a8604c28991415c9d6181ce0</sys_id>
+      <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+      <name>x_2097092_linq_club</name>
+      <element>category</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>
