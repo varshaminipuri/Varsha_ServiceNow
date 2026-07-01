@@ -100,8 +100,7 @@
     font-weight: 600;
     color: $text-color;
     margin-bottom: 8px;
-}
-]]></css>
+}]]></css>
     <data_table>sp_instance</data_table>
     <demo_data/>
     <description/>
@@ -110,8 +109,8 @@
     <has_preview>false</has_preview>
     <id>linq-event-listing</id>
     <internal>false</internal>
-    <link>function link(scope, element, attrs, controller) {
-}</link>
+    <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
     <name>LINQ Event Listing</name>
     <option_schema/>
     <public>false</public>

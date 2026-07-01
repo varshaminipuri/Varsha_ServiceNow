@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>48a6aeb699744affa0d9713632976bfb</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sp_widget_48a6aeb699744affa0d9713632976bfb</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() {
+    var c = this;
+    c.loading = false;
+
+    c.refresh = function() {
+        if (c.loading) return;
+        c.loading = true;
+        c.server.get({ action: 'refresh' }).then(function(r) {
+            c.data = r.data;
+            c.loading = false;
+        }, function() {
+            c.loading = false;
+        });
+    };
+};
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.sp-system-overview .page-header {
+    border-bottom: 1px solid $border-tertiary;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+}
+.sp-system-overview .page-header h2 {
+    color: $text-color;
+    font-weight: 600;
+    margin-top: 0;
+}
+.sp-system-overview .page-header .glyphicon {
+    margin-right: 8px;
+    color: $brand-primary;
+}
+
+/* Stat Tiles */
+.sp-system-overview .sp-stat-tile {
+    display: flex;
+    align-items: center;
+    padding: 18px;
+    margin-bottom: 24px;
+    border-radius: 4px;
+    background: $background-primary;
+    border: 1px solid $border-tertiary;
+    box-shadow: 0 1px 4px rgba($text-color, 0.07);
+}
+.sp-system-overview .sp-stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 14px;
+    font-size: 18px;
+}
+.sp-system-overview .sp-stat-info .sp-stat-icon {
+    background: $state-info-bg;
+    color: $brand-info;
+}
+.sp-system-overview .sp-stat-success .sp-stat-icon {
+    background: $state-success-bg;
+    color: $brand-success;
+}
+.sp-system-overview .sp-stat-warning .sp-stat-icon {
+    background: $state-warning-bg;
+    color: $brand-warning;
+}
+.sp-system-overview .sp-stat-content {
+    flex: 1;
+}
+.sp-system-overview .sp-stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: $text-color;
+    line-height: 1.2;
+}
+.sp-system-overview .sp-stat-label {
+    font-size: 12px;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Panel */
+.sp-system-overview .sp-panel {
+    border: 1px solid $border-tertiary;
+    box-shadow: 0 1px 4px rgba($text-color, 0.07);
+    margin-bottom: 24px;
+}
+.sp-system-overview .sp-panel .panel-heading {
+    background: $background-secondary;
+    border-bottom: 1px solid $border-tertiary;
+}
+.sp-system-overview .sp-panel .panel-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+}
+.sp-system-overview .sp-panel .panel-title .glyphicon {
+    margin-right: 6px;
+    color: $brand-primary;
+}
+.sp-system-overview .sp-panel .table th {
+    color: $text-muted;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid $border-tertiary;
+}
+.sp-system-overview .sp-panel .table td {
+    vertical-align: middle;
+    color: $text-color;
+}
+.sp-system-overview .sp-panel .badge {
+    background: $brand-primary;
+}
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>linq-admin-system-overview</id>
+    <internal>false</internal>
+    <link>function link(scope, element, attrs, controller) {
+}</link>
+    <name>LINQ Admin System Overview</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+    data.topColleges = [];
+    data.topClubs = [];
+    data.thisWeekEvents = [];
+    data.recentRegistrations = [];
+    data.totalStudents = 0;
+    data.totalClubAdmins = 0;
+    data.totalCollegeAdmins = 0;
+    data.message = '';
+
+    try {
+        if (input && input.action === 'refresh') {
+            // Same logic as initial load
+        }
+
+        // Top colleges by event count
+        var collegeEventGa = new GlideAggregate('x_2097092_linq_event');
+        collegeEventGa.addAggregate('COUNT');
+        collegeEventGa.groupBy('college');
+        collegeEventGa.orderByAggregate('COUNT', 'college');
+        collegeEventGa.setLimit(10);
+        collegeEventGa.query();
+        while (collegeEventGa.next()) {
+            var collegeSysId = collegeEventGa.getValue('college') + '';
+            var collegeName = collegeEventGa.getDisplayValue('college') + '';
+            var evCount = parseInt(collegeEventGa.getAggregate('COUNT'), 10) || 0;
+            if (collegeName) {
+                data.topColleges.push({
+                    sys_id: collegeSysId,
+                    name: collegeName,
+                    event_count: evCount
+                });
+            }
+        }
+
+        // Top clubs by registration count
+        var clubRegGa = new GlideAggregate('x_2097092_linq_registration');
+        clubRegGa.addAggregate('COUNT');
+        clubRegGa.groupBy('event.club');
+        clubRegGa.orderByAggregate('COUNT', 'event.club');
+        clubRegGa.setLimit(10);
+        clubRegGa.query();
+        while (clubRegGa.next()) {
+            var clubSysId = clubRegGa.getValue('event.club') + '';
+            var clubName = clubRegGa.getDisplayValue('event.club') + '';
+            var regCount = parseInt(clubRegGa.getAggregate('COUNT'), 10) || 0;
+            if (clubName) {
+                data.topClubs.push({
+                    sys_id: clubSysId,
+                    name: clubName,
+                    registration_count: regCount
+                });
+            }
+        }
+
+        // Events happening this week
+        var now = new GlideDateTime();
+        var weekEnd = new GlideDateTime();
+        weekEnd.addDaysUTC(7);
+
+        var weekEvGr = new GlideRecord('x_2097092_linq_event');
+        weekEvGr.addQuery('event_date', '>=', now.getDate().getValue() + '');
+        weekEvGr.addQuery('event_date', '<=', weekEnd.getDate().getValue() + '');
+        weekEvGr.addQuery('status', 'IN', 'approved,live');
+        weekEvGr.orderBy('event_date');
+        weekEvGr.setLimit(20);
+        weekEvGr.query();
+        while (weekEvGr.next()) {
+            data.thisWeekEvents.push({
+                sys_id: weekEvGr.getUniqueValue(),
+                title: weekEvGr.getValue('title') + '',
+                club_name: weekEvGr.getDisplayValue('club') + '',
+                college_name: weekEvGr.getDisplayValue('college') + '',
+                event_date: weekEvGr.getDisplayValue('event_date') + '',
+                venue: weekEvGr.getValue('venue') + '',
+                status: weekEvGr.getValue('status') + ''
+            });
+        }
+
+        // Recent registrations (last 20)
+        var regGr = new GlideRecord('x_2097092_linq_registration');
+        regGr.orderByDesc('sys_created_on');
+        regGr.setLimit(20);
+        regGr.query();
+        while (regGr.next()) {
+            data.recentRegistrations.push({
+                sys_id: regGr.getUniqueValue(),
+                student_name: regGr.getDisplayValue('student') + '',
+                event_title: regGr.getDisplayValue('event') + '',
+                registration_date: regGr.getDisplayValue('registration_date') + '',
+                status: regGr.getValue('status') + ''
+            });
+        }
+
+        // User statistics: total students (members with role 'member')
+        var studentGa = new GlideAggregate('x_2097092_linq_club_membership');
+        studentGa.addQuery('role', 'member');
+        studentGa.addQuery('status', 'active');
+        studentGa.addAggregate('COUNT', 'member');
+        studentGa.groupBy('member');
+        studentGa.setLimit(10000);
+        studentGa.query();
+        var studentCount = 0;
+        while (studentGa.next()) {
+            studentCount++;
+        }
+        data.totalStudents = studentCount;
+
+        // Total club admins (president or vice_president)
+        var adminGa = new GlideAggregate('x_2097092_linq_club_membership');
+        adminGa.addQuery('role', 'IN', 'president,vice_president');
+        adminGa.addQuery('status', 'active');
+        adminGa.addAggregate('COUNT', 'member');
+        adminGa.groupBy('member');
+        adminGa.setLimit(10000);
+        adminGa.query();
+        var clubAdminCount = 0;
+        while (adminGa.next()) {
+            clubAdminCount++;
+        }
+        data.totalClubAdmins = clubAdminCount;
+
+        // Total college admins (users with college_admin role)
+        var collegeAdminGr = new GlideRecord('sys_user_has_role');
+        collegeAdminGr.addQuery('role.name', 'x_2097092_linq.college_admin');
+        collegeAdminGr.addQuery('state', 'active');
+        collegeAdminGr.setLimit(1000);
+        collegeAdminGr.query();
+        data.totalCollegeAdmins = collegeAdminGr.getRowCount();
+
+    } catch (e) {
+        gs.error('linq-admin-system-overview error: ' + e.message);
+        data.message = 'An error occurred loading system overview data.';
+    }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="container-fluid sp-system-overview">
+    <div class="page-header">
+        <h2><span class="glyphicon glyphicon-stats"></span> System Overview</h2>
+        <button type="button" class="btn btn-default btn-sm pull-right" ng-click="c.refresh()" ng-disabled="c.loading">
+            <span class="glyphicon glyphicon-refresh" ng-class="{'fa-spin': c.loading}"></span> Refresh
+        </button>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="alert alert-danger" ng-if="c.data.message" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign"></span>
+        {{c.data.message}}
+    </div>
+
+    <!-- User Stats Summary -->
+    <div class="row">
+        <div class="col-md-4 col-sm-4">
+            <div class="sp-stat-tile sp-stat-info">
+                <div class="sp-stat-icon">
+                    <span class="glyphicon glyphicon-user"></span>
+                </div>
+                <div class="sp-stat-content">
+                    <div class="sp-stat-value">{{c.data.totalStudents}}</div>
+                    <div class="sp-stat-label">Students</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4">
+            <div class="sp-stat-tile sp-stat-success">
+                <div class="sp-stat-icon">
+                    <span class="glyphicon glyphicon-king"></span>
+                </div>
+                <div class="sp-stat-content">
+                    <div class="sp-stat-value">{{c.data.totalClubAdmins}}</div>
+                    <div class="sp-stat-label">Club Admins</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4">
+            <div class="sp-stat-tile sp-stat-warning">
+                <div class="sp-stat-icon">
+                    <span class="glyphicon glyphicon-briefcase"></span>
+                </div>
+                <div class="sp-stat-content">
+                    <div class="sp-stat-value">{{c.data.totalCollegeAdmins}}</div>
+                    <div class="sp-stat-label">College Admins</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Colleges & Top Clubs -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default sp-panel">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <span class="glyphicon glyphicon-education"></span> Top Colleges by Events
+                    </h4>
+                </div>
+                <div class="panel-body" ng-if="c.data.topColleges.length === 0">
+                    <p class="text-muted text-center">No data available.</p>
+                </div>
+                <table class="table table-striped" ng-if="c.data.topColleges.length > 0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>College</th>
+                            <th>Events</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="college in c.data.topColleges track by college.sys_id">
+                            <td>{{$index + 1}}</td>
+                            <td><strong>{{college.name}}</strong></td>
+                            <td><span class="badge">{{college.event_count}}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default sp-panel">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <span class="glyphicon glyphicon-tower"></span> Top Clubs by Registrations
+                    </h4>
+                </div>
+                <div class="panel-body" ng-if="c.data.topClubs.length === 0">
+                    <p class="text-muted text-center">No data available.</p>
+                </div>
+                <table class="table table-striped" ng-if="c.data.topClubs.length > 0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Club</th>
+                            <th>Registrations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="club in c.data.topClubs track by club.sys_id">
+                            <td>{{$index + 1}}</td>
+                            <td><strong>{{club.name}}</strong></td>
+                            <td><span class="badge">{{club.registration_count}}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- This Week's Events -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default sp-panel">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <span class="glyphicon glyphicon-calendar"></span> This Week's Events
+                    </h4>
+                </div>
+                <div class="panel-body" ng-if="c.data.thisWeekEvents.length === 0">
+                    <p class="text-muted text-center">No events scheduled this week.</p>
+                </div>
+                <table class="table table-striped table-hover" ng-if="c.data.thisWeekEvents.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Club</th>
+                            <th>College</th>
+                            <th>Date</th>
+                            <th>Venue</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="event in c.data.thisWeekEvents track by event.sys_id">
+                            <td><strong>{{event.title}}</strong></td>
+                            <td>{{event.club_name}}</td>
+                            <td>{{event.college_name}}</td>
+                            <td>{{event.event_date}}</td>
+                            <td>{{event.venue}}</td>
+                            <td>
+                                <span class="label" ng-class="{
+                                    'label-primary': event.status === 'approved',
+                                    'label-success': event.status === 'live'
+                                }">{{event.status}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Registrations -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default sp-panel">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <span class="glyphicon glyphicon-list-alt"></span> Recent Registrations
+                    </h4>
+                </div>
+                <div class="panel-body" ng-if="c.data.recentRegistrations.length === 0">
+                    <p class="text-muted text-center">No recent registrations.</p>
+                </div>
+                <table class="table table-striped table-hover" ng-if="c.data.recentRegistrations.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="reg in c.data.recentRegistrations track by reg.sys_id">
+                            <td>{{reg.student_name}}</td>
+                            <td>{{reg.event_title}}</td>
+                            <td>{{reg.registration_date}}</td>
+                            <td>
+                                <span class="label" ng-class="{
+                                    'label-success': reg.status === 'registered',
+                                    'label-info': reg.status === 'checked_in',
+                                    'label-danger': reg.status === 'cancelled',
+                                    'label-warning': reg.status === 'waitlisted'
+                                }">{{reg.status}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>

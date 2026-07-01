@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>5ad7bb0101494fa49af70fa65c606ce6</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sp_widget_5ad7bb0101494fa49af70fa65c606ce6</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() {
+    var c = this;
+    c.loading = false;
+
+    c.refresh = function() {
+        if (c.loading) return;
+        c.loading = true;
+        c.server.get({ action: 'refresh' }).then(function(r) {
+            c.data = r.data;
+            c.loading = false;
+        }, function() {
+            c.loading = false;
+        });
+    };
+};
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.sp-admin-dashboard .page-header {
+    border-bottom: 1px solid $border-tertiary;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+}
+.sp-admin-dashboard .page-header h2 {
+    color: $text-color;
+    font-weight: 600;
+    margin-top: 0;
+}
+.sp-admin-dashboard .page-header .glyphicon {
+    margin-right: 8px;
+    color: $brand-primary;
+}
+
+/* Stat Tiles */
+.sp-stat-tile {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 24px;
+    border-radius: 4px;
+    background: $background-primary;
+    border: 1px solid $border-tertiary;
+    box-shadow: 0 1px 4px rgba($text-color, 0.07);
+}
+.sp-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    font-size: 20px;
+}
+.sp-stat-info .sp-stat-icon {
+    background: $state-info-bg;
+    color: $brand-info;
+}
+.sp-stat-success .sp-stat-icon {
+    background: $state-success-bg;
+    color: $brand-success;
+}
+.sp-stat-warning .sp-stat-icon {
+    background: $state-warning-bg;
+    color: $brand-warning;
+}
+.sp-stat-danger .sp-stat-icon {
+    background: $state-danger-bg;
+    color: $brand-danger;
+}
+.sp-stat-content {
+    flex: 1;
+}
+.sp-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: $text-color;
+    line-height: 1.2;
+}
+.sp-stat-label {
+    font-size: 13px;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Panel */
+.sp-panel {
+    border: 1px solid $border-tertiary;
+    box-shadow: 0 1px 4px rgba($text-color, 0.07);
+}
+.sp-panel .panel-heading {
+    background: $background-secondary;
+    border-bottom: 1px solid $border-tertiary;
+}
+.sp-panel .panel-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+}
+.sp-panel .table th {
+    color: $text-muted;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid $border-tertiary;
+}
+.sp-panel .table td {
+    vertical-align: middle;
+    color: $text-color;
+}
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>linq-admin-club-dashboard</id>
+    <internal>false</internal>
+    <link>function link(scope, element, attrs, controller) {
+}</link>
+    <name>LINQ Club Admin Dashboard</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+    data.totalEvents = 0;
+    data.liveEvents = 0;
+    data.totalRegistrations = 0;
+    data.totalCheckins = 0;
+    data.recentEvents = [];
+    data.message = '';
+    data.isAdmin = false;
+
+    try {
+        if (input && input.action === 'refresh') {
+            // Same logic as initial load — allows client refresh
+        }
+
+        var userId = gs.getUserID();
+
+        // Find clubs where user is president or vice_president
+        var clubIds = [];
+        var memGr = new GlideRecord('x_2097092_linq_club_membership');
+        memGr.addQuery('member', userId);
+        memGr.addQuery('role', 'IN', 'president,vice_president');
+        memGr.addQuery('status', 'active');
+        memGr.setLimit(50);
+        memGr.query();
+
+        while (memGr.next()) {
+            clubIds.push(memGr.getValue('club') + '');
+        }
+
+        if (clubIds.length === 0) {
+            data.message = 'You are not an admin of any clubs.';
+            return;
+        }
+
+        data.isAdmin = true;
+
+        // Get events for managed clubs
+        var eventIds = [];
+        var evGr = new GlideRecord('x_2097092_linq_event');
+        evGr.addQuery('club', 'IN', clubIds.join(','));
+        evGr.orderByDesc('event_date');
+        evGr.setLimit(200);
+        evGr.query();
+
+        while (evGr.next()) {
+            eventIds.push(evGr.getUniqueValue());
+            data.totalEvents++;
+
+            if (evGr.getValue('status') + '' === 'live') {
+                data.liveEvents++;
+            }
+        }
+
+        // Get recent events (last 10)
+        var recentGr = new GlideRecord('x_2097092_linq_event');
+        recentGr.addQuery('club', 'IN', clubIds.join(','));
+        recentGr.orderByDesc('event_date');
+        recentGr.setLimit(10);
+        recentGr.query();
+
+        while (recentGr.next()) {
+            var eventId = recentGr.getUniqueValue();
+
+            // Count registrations for this event
+            var regCount = 0;
+            var regGa = new GlideAggregate('x_2097092_linq_registration');
+            regGa.addQuery('event', eventId);
+            regGa.addAggregate('COUNT');
+            regGa.query();
+            if (regGa.next()) {
+                regCount = parseInt(regGa.getAggregate('COUNT'), 10) || 0;
+            }
+
+            data.recentEvents.push({
+                sys_id: eventId,
+                title: recentGr.getValue('title') + '',
+                event_date: recentGr.getDisplayValue('event_date') + '',
+                status: recentGr.getValue('status') + '',
+                club_name: recentGr.getDisplayValue('club') + '',
+                registrations: regCount
+            });
+        }
+
+        // Total registrations for all events
+        if (eventIds.length > 0) {
+            var regTotalGa = new GlideAggregate('x_2097092_linq_registration');
+            regTotalGa.addQuery('event', 'IN', eventIds.join(','));
+            regTotalGa.addAggregate('COUNT');
+            regTotalGa.query();
+            if (regTotalGa.next()) {
+                data.totalRegistrations = parseInt(regTotalGa.getAggregate('COUNT'), 10) || 0;
+            }
+
+            // Total check-ins (attendance)
+            var attGa = new GlideAggregate('x_2097092_linq_attendance');
+            attGa.addQuery('event', 'IN', eventIds.join(','));
+            attGa.addAggregate('COUNT');
+            attGa.query();
+            if (attGa.next()) {
+                data.totalCheckins = parseInt(attGa.getAggregate('COUNT'), 10) || 0;
+            }
+        }
+    } catch (e) {
+        gs.error('linq-admin-club-dashboard error: ' + e.message);
+        data.message = 'An error occurred loading dashboard data.';
+    }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="container-fluid sp-admin-dashboard">
+    <div class="page-header">
+        <h2><span class="glyphicon glyphicon-dashboard"></span> Club Admin Dashboard</h2>
+        <p class="text-muted">Overview of your managed clubs and events</p>
+        <button type="button" class="btn btn-default btn-sm pull-right" ng-click="c.refresh()" ng-disabled="c.loading">
+            <span class="glyphicon glyphicon-refresh" ng-class="{'fa-spin': c.loading}"></span> Refresh
+        </button>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="alert alert-warning" ng-if="c.data.message && !c.data.isAdmin" role="alert">
+        <span class="glyphicon glyphicon-info-sign"></span>
+        {{c.data.message}}
+    </div>
+
+    <div class="alert alert-danger" ng-if="c.data.message && c.data.isAdmin" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign"></span>
+        {{c.data.message}}
+    </div>
+
+    <div ng-if="c.data.isAdmin">
+        <!-- Stat Tiles -->
+        <div class="row">
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="sp-stat-tile sp-stat-info">
+                    <div class="sp-stat-icon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </div>
+                    <div class="sp-stat-content">
+                        <div class="sp-stat-value">{{c.data.totalEvents}}</div>
+                        <div class="sp-stat-label">Total Events</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="sp-stat-tile sp-stat-success">
+                    <div class="sp-stat-icon">
+                        <span class="glyphicon glyphicon-flash"></span>
+                    </div>
+                    <div class="sp-stat-content">
+                        <div class="sp-stat-value">{{c.data.liveEvents}}</div>
+                        <div class="sp-stat-label">Live Events</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="sp-stat-tile sp-stat-warning">
+                    <div class="sp-stat-icon">
+                        <span class="glyphicon glyphicon-user"></span>
+                    </div>
+                    <div class="sp-stat-content">
+                        <div class="sp-stat-value">{{c.data.totalRegistrations}}</div>
+                        <div class="sp-stat-label">Total Registrations</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="sp-stat-tile sp-stat-danger">
+                    <div class="sp-stat-icon">
+                        <span class="glyphicon glyphicon-check"></span>
+                    </div>
+                    <div class="sp-stat-content">
+                        <div class="sp-stat-value">{{c.data.totalCheckins}}</div>
+                        <div class="sp-stat-label">Check-ins</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Events Table -->
+        <div class="panel panel-default sp-panel">
+            <div class="panel-heading">
+                <h4 class="panel-title">Recent Events</h4>
+            </div>
+            <div class="panel-body" ng-if="c.data.recentEvents.length === 0">
+                <p class="text-muted text-center">No events found.</p>
+            </div>
+            <table class="table table-striped table-hover" ng-if="c.data.recentEvents.length > 0">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Club</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Registrations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="event in c.data.recentEvents track by event.sys_id">
+                        <td>{{event.title}}</td>
+                        <td>{{event.club_name}}</td>
+                        <td>{{event.event_date}}</td>
+                        <td>
+                            <span class="label" ng-class="{
+                                'label-success': event.status === 'live',
+                                'label-info': event.status === 'approved',
+                                'label-warning': event.status === 'submitted' || event.status === 'draft',
+                                'label-danger': event.status === 'cancelled',
+                                'label-default': event.status === 'completed'
+                            }">{{event.status}}</span>
+                        </td>
+                        <td>{{event.registrations}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>

@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance_menu">
-  <sp_instance_menu action="INSERT_OR_UPDATE">
-    <sys_id>ff3ba4e1d52e4c588b09546addfe8b30</sys_id>
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance">
+  <sp_instance action="INSERT_OR_UPDATE">
+    <sys_id>d4e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9</sys_id>
     <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
-    <sys_update_name>sp_instance_menu_ff3ba4e1d52e4c588b09546addfe8b30</sys_update_name>
+    <sys_update_name>sp_instance_d4e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9</sys_update_name>
     <active>true</active>
     <advanced_placeholder_dimensions>false</advanced_placeholder_dimensions>
     <async_load>false</async_load>
@@ -13,8 +13,21 @@
     <css/>
     <glyph/>
     <id/>
-    <order>1</order>
-    <placeholder_dimensions>{"mobile":{"height":"250px","width":"100%"},"desktop":{"height":"250px","width":"100%"},"tablet":{"height":"250px","width":"100%"}}</placeholder_dimensions>
+    <order>100</order>
+    <placeholder_dimensions>{
+	"mobile": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"desktop": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"tablet": {
+		"height": "250px",
+		"width": "100%"
+	}
+}</placeholder_dimensions>
     <placeholder_dimensions_script>function evaluateConfig(options) { return {
 	"mobile": {
 		"height": "250px",
@@ -48,10 +61,10 @@
     <roles/>
     <short_description/>
     <size>md</size>
-    <sp_column/>
-    <sp_widget>5ef595c1cb12020000f8d856634c9c6e</sp_widget>
-    <title>LINQ Navigation</title>
+    <sp_column>c3d4e5f6a7b8c9d0e1f2a3b4c5d6a7b8</sp_column>
+    <sp_widget>5ad7bb0101494fa49af70fa65c606ce6</sp_widget>
+    <title/>
     <url/>
     <widget_parameters/>
-  </sp_instance_menu>
+  </sp_instance>
 </record_update>

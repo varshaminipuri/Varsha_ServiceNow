@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_page">
+  <sp_page action="INSERT_OR_UPDATE">
+    <sys_id>abb786c82a994c6588a4edd77fa5f4a5</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sp_page_abb786c82a994c6588a4edd77fa5f4a5</sys_update_name>
+    <category>custom</category>
+    <css/>
+    <draft>false</draft>
+    <dynamic_title_structure/>
+    <human_readable_url_structure/>
+    <id>linq_college_dashboard</id>
+    <internal>false</internal>
+    <omit_watcher>false</omit_watcher>
+    <public>false</public>
+    <roles/>
+    <seo_script/>
+    <short_description/>
+    <title>College Dashboard</title>
+    <use_seo_script>false</use_seo_script>
+  </sp_page>
+</record_update>

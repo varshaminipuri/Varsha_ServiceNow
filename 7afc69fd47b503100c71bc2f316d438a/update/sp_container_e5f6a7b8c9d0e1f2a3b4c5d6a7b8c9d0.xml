@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_container">
+  <sp_container action="INSERT_OR_UPDATE">
+    <sys_id>e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9d0</sys_id>
+    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+    <sys_update_name>sp_container_e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9d0</sys_update_name>
+    <background_color/>
+    <background_image/>
+    <background_style>default</background_style>
+    <bootstrap_alt>false</bootstrap_alt>
+    <class_name/>
+    <container_class_name/>
+    <name>Manage Events Container</name>
+    <order>100</order>
+    <semantic_tag/>
+    <sp_page id="linq_club_manage_events">c7446d7cc7d34e0d9fd54264c121da07</sp_page>
+    <subheader>false</subheader>
+    <title/>
+    <width>container</width>
+  </sp_container>
+</record_update>
