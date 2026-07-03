@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="dc90f45ede7d47aebbfbe61609af6c71" label="Event" name="x_2097092_linq_event" type="collection">
+        <element label="Description" max_length="4000" name="description" type="string"/>
+        <element label="Club" mandatory="true" max_length="32" name="club" reference="x_2097092_linq_club" type="reference"/>
+        <element label="College" max_length="32" name="college" reference="x_2097092_linq_college" type="reference"/>
+        <element label="Rejection Reason" max_length="1000" name="rejection_reason" type="string"/>
+        <element label="Venue" max_length="200" name="venue" type="string"/>
+        <element label="Banner URL" max_length="1024" name="banner_url" type="url"/>
+        <element display="true" label="Title" max_length="200" name="title" type="string"/>
+        <element label="Event Date" max_length="40" name="event_date" type="glide_date"/>
+        <element default="100" label="Capacity" max_length="40" name="capacity" type="integer"/>
+        <element label="Approved By" max_length="32" name="approved_by" reference="sys_user" type="reference"/>
+        <element label="End Time" max_length="8" name="end_time" type="glide_time"/>
+        <element label="Start Time" max_length="8" name="start_time" type="glide_time"/>
+        <element label="Creator Email" max_length="255" name="creator_email" type="email"/>
+        <element choice="1" default="draft" label="Status" max_length="40" name="status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Submitted" sequence="1" value="submitted"/>
+                <element inactive_on_update="false" label="Completed" sequence="4" value="completed"/>
+                <element inactive_on_update="false" label="Approved" sequence="2" value="approved"/>
+                <element inactive_on_update="false" label="Cancelled" sequence="5" value="cancelled"/>
+                <element inactive_on_update="false" label="Draft" sequence="0" value="draft"/>
+                <element inactive_on_update="false" label="Live" sequence="3" value="live"/>
+            </choice>
+        </element>
+        <element label="Approved On" max_length="40" name="approved_on" type="glide_date_time"/>
+        <element choice="1" default="college_only" label="Scope" max_length="40" name="scope" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Inter College" sequence="1" value="inter_college"/>
+                <element inactive_on_update="false" label="College Only" sequence="0" value="college_only"/>
+            </choice>
+        </element>
+        <index name="index">
+            <element name="approved_by"/>
+        </index>
+        <index name="index2">
+            <element name="club"/>
+        </index>
+        <index name="index3">
+            <element name="college"/>
+        </index>
+    </element>
+</database>

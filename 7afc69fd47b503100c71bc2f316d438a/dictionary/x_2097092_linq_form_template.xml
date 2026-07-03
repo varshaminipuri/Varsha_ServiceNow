@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="b279ea34f69d4289a999241406b65fd6" label="Form Template" name="x_2097092_linq_form_template" type="collection">
+        <element label="Placeholder Text" max_length="200" name="placeholder_text" type="string"/>
+        <element default="10" label="Sort Order" max_length="40" name="sort_order" type="integer"/>
+        <element label="Is Required" max_length="40" name="is_required" type="boolean"/>
+        <element label="Event" mandatory="true" max_length="32" name="event" reference="x_2097092_linq_event" type="reference"/>
+        <element choice="1" default="text" label="Field Type" max_length="40" name="field_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Text" sequence="0" value="text"/>
+                <element inactive_on_update="false" label="Textarea" sequence="1" value="textarea"/>
+                <element inactive_on_update="false" label="Number" sequence="4" value="number"/>
+                <element inactive_on_update="false" label="Email" sequence="5" value="email"/>
+                <element inactive_on_update="false" label="Dropdown" sequence="2" value="dropdown"/>
+                <element inactive_on_update="false" label="URL" sequence="3" value="url"/>
+            </choice>
+        </element>
+        <element label="Field Options" max_length="1000" name="field_options" type="string"/>
+        <element display="true" label="Field Label" max_length="200" name="field_label" type="string"/>
+        <index name="index">
+            <element name="event"/>
+        </index>
+    </element>
+</database>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="3188ef45f69d43308440c60a320767c4" label="Registration" name="x_2097092_linq_registration" type="collection">
+        <element label="QR Token" max_length="200" name="qr_token" type="string"/>
+        <element label="Cancelled On" max_length="40" name="cancelled_on" type="glide_date_time"/>
+        <element label="Creator Email" max_length="255" name="creator_email" type="email"/>
+        <element label="Custom Field Data" max_length="4000" name="custom_field_data" type="string"/>
+        <element label="Registration Date" max_length="40" name="registration_date" type="glide_date_time"/>
+        <element label="Event" mandatory="true" max_length="32" name="event" reference="x_2097092_linq_event" type="reference"/>
+        <element label="Student" mandatory="true" max_length="32" name="student" reference="sys_user" type="reference"/>
+        <element choice="1" default="registered" label="Status" max_length="40" name="status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Registered" sequence="0" value="registered"/>
+                <element inactive_on_update="false" label="Checked In" sequence="1" value="checked_in"/>
+                <element inactive_on_update="false" label="Cancelled" sequence="2" value="cancelled"/>
+                <element inactive_on_update="false" label="Waitlisted" sequence="3" value="waitlisted"/>
+            </choice>
+        </element>
+        <index name="index">
+            <element name="event"/>
+        </index>
+        <index name="index2">
+            <element name="student"/>
+        </index>
+    </element>
+</database>

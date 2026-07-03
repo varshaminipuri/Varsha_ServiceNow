@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
-  <sp_widget action="INSERT_OR_UPDATE">
-    <sys_id>46a6cf5fe57b405e9eb457ae0c6bda1f</sys_id>
-    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
-    <sys_update_name>sp_widget_46a6cf5fe57b405e9eb457ae0c6bda1f</sys_update_name>
-    <category>custom</category>
-    <client_script><![CDATA[api.controller = function() {
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() {
     var c = this;
     c.showForm = false;
     c.submitting = false;
@@ -73,8 +70,8 @@
     };
 };
 ]]></client_script>
-    <controller_as>c</controller_as>
-    <css><![CDATA[.sp-manage-events .panel-heading {
+        <controller_as>c</controller_as>
+        <css>.sp-manage-events .panel-heading {
     padding: 12px 20px;
 }
 .sp-manage-events .panel-title {
@@ -105,12 +102,12 @@
     border: none;
     color: $btn-primary-color;
     font-weight: 500;
-    &:hover:not(:disabled) {
+    &amp;:hover:not(:disabled) {
         background: $brand-primary-dark;
         box-shadow: 0 2px 8px rgba($brand-primary, 0.3);
         color: $btn-primary-color;
     }
-    &:disabled {
+    &amp;:disabled {
         opacity: 0.6;
         cursor: not-allowed;
     }
@@ -119,22 +116,22 @@
     border-color: $brand-primary;
     box-shadow: 0 0 0 2px rgba($brand-primary, 0.15);
 }
-]]></css>
-    <data_table>sp_instance</data_table>
-    <demo_data/>
-    <description/>
-    <docs/>
-    <field_list/>
-    <has_preview>false</has_preview>
-    <id>linq-admin-manage-events</id>
-    <internal>false</internal>
-    <link>function link(scope, element, attrs, controller) {
-}</link>
-    <name>LINQ Admin Manage Events</name>
-    <option_schema/>
-    <public>false</public>
-    <roles/>
-    <script><![CDATA[(function() {
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-admin-manage-events</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>LINQ Admin Manage Events</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
     data.events = [];
     data.clubs = [];
     data.message = '';
@@ -237,8 +234,20 @@
     }
 })();
 ]]></script>
-    <servicenow>false</servicenow>
-    <template><![CDATA[<div class="container-fluid sp-manage-events">
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 09:32:18</sys_created_on>
+        <sys_id>46a6cf5fe57b405e9eb457ae0c6bda1f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ Admin Manage Events</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_46a6cf5fe57b405e9eb457ae0c6bda1f</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 09:32:18</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid sp-manage-events">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title pull-left">
@@ -383,5 +392,5 @@
     </div>
 </div>
 ]]></template>
-  </sp_widget>
+    </sp_widget>
 </record_update>

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
-  <sp_widget action="INSERT_OR_UPDATE">
-    <sys_id>a9d3691ec9724142a26df8345260a792</sys_id>
-    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
-    <sys_update_name>sp_widget_a9d3691ec9724142a26df8345260a792</sys_update_name>
-    <category>custom</category>
-    <client_script><![CDATA[api.controller = function($timeout) {
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($timeout) {
     var c = this;
 
     if (c.data.qr_token) {
@@ -24,8 +21,8 @@
     }
 };
 ]]></client_script>
-    <controller_as>c</controller_as>
-    <css><![CDATA[.sp-card {
+        <controller_as>c</controller_as>
+        <css>.sp-card {
     border: 1px solid $border-tertiary;
     border-radius: $border-radius-large;
     box-shadow: 0 1px 4px rgba($text-color, 0.07);
@@ -83,22 +80,22 @@
 .sp-qr-hint {
     margin-top: 16px;
     font-size: $font-size-small;
-}]]></css>
-    <data_table>sp_instance</data_table>
-    <demo_data/>
-    <description/>
-    <docs/>
-    <field_list/>
-    <has_preview>false</has_preview>
-    <id>linq-qr-pass</id>
-    <internal>false</internal>
-    <link><![CDATA[function link(scope, element, attrs, controller) {
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-qr-pass</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
 }]]></link>
-    <name>LINQ QR Pass</name>
-    <option_schema/>
-    <public>false</public>
-    <roles/>
-    <script><![CDATA[(function() {
+        <name>LINQ QR Pass</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
     data.qr_token = '';
     data.studentName = '';
     data.eventTitle = '';
@@ -144,8 +141,20 @@
     }
 })();
 ]]></script>
-    <servicenow>false</servicenow>
-    <template><![CDATA[<div class="container-fluid">
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 07:59:50</sys_created_on>
+        <sys_id>a9d3691ec9724142a26df8345260a792</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ QR Pass</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_a9d3691ec9724142a26df8345260a792</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 07:59:50</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid">
     <div class="alert alert-danger" ng-if="c.data.errorMsg" role="alert">
         <span class="glyphicon glyphicon-exclamation-sign"></span>
         {{c.data.errorMsg}}
@@ -174,5 +183,5 @@
     </div>
 </div>
 ]]></template>
-  </sp_widget>
+    </sp_widget>
 </record_update>

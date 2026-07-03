@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
-  <sp_widget action="INSERT_OR_UPDATE">
-    <sys_id>810af613e44741138e2693dcd559bb0d</sys_id>
-    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
-    <sys_update_name>sp_widget_810af613e44741138e2693dcd559bb0d</sys_update_name>
-    <category>custom</category>
-    <client_script><![CDATA[api.controller = function($scope, $timeout) {
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($scope, $timeout) {
     var c = this;
     c.scanning = false;
     c.scannerInstance = null;
@@ -74,8 +71,8 @@
     });
 };
 ]]></client_script>
-    <controller_as>c</controller_as>
-    <css><![CDATA[.sp-card {
+        <controller_as>c</controller_as>
+        <css>.sp-card {
     border: 1px solid $border-tertiary;
     border-radius: $border-radius-large;
     box-shadow: 0 1px 4px rgba($text-color, 0.07);
@@ -158,7 +155,7 @@
     border: none;
     background: $brand-primary;
     color: $btn-primary-color;
-    &:hover:not(:disabled) {
+    &amp;:hover:not(:disabled) {
         background: $brand-primary-dark;
         box-shadow: 0 2px 8px rgba($brand-primary, 0.3);
         color: $btn-primary-color;
@@ -175,7 +172,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    &:hover {
+    &amp;:hover {
         background: $background-secondary;
     }
 }
@@ -184,22 +181,22 @@
 }
 .sp-spin {
     animation: sp-spin 0.8s linear infinite;
-}]]></css>
-    <data_table>sp_instance</data_table>
-    <demo_data/>
-    <description/>
-    <docs/>
-    <field_list/>
-    <has_preview>false</has_preview>
-    <id>linq-qr-scanner</id>
-    <internal>false</internal>
-    <link><![CDATA[function link(scope, element, attrs, controller) {
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-qr-scanner</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
 }]]></link>
-    <name>LINQ QR Scanner</name>
-    <option_schema/>
-    <public>false</public>
-    <roles/>
-    <script><![CDATA[(function() {
+        <name>LINQ QR Scanner</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
     data.accessDenied = false;
     data.scanResult = null;
     data.errorMsg = '';
@@ -255,8 +252,20 @@
     }
 })();
 ]]></script>
-    <servicenow>false</servicenow>
-    <template><![CDATA[<div class="container-fluid">
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 07:59:50</sys_created_on>
+        <sys_id>810af613e44741138e2693dcd559bb0d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ QR Scanner</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_810af613e44741138e2693dcd559bb0d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 07:59:50</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid">
     <!-- Access denied -->
     <div ng-if="c.data.accessDenied" class="alert alert-warning" role="alert">
         <span class="glyphicon glyphicon-lock"></span>
@@ -322,5 +331,5 @@
     </div>
 </div>
 ]]></template>
-  </sp_widget>
+    </sp_widget>
 </record_update>

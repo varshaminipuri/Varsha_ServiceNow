@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="6ae9dec50be04fc4b66a6735b759271a" label="College" name="x_2097092_linq_college" type="collection">
+        <element label="Notes" max_length="1000" name="notes" type="string"/>
+        <element label="Address" max_length="500" name="address" type="string"/>
+        <element label="Code" max_length="40" name="code" type="string"/>
+        <element label="Email Domain" max_length="100" name="email_domain" type="string"/>
+        <element choice="1" default="pending" label="Status" max_length="40" name="status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Suspended" sequence="3" value="suspended"/>
+                <element inactive_on_update="false" label="Verified" sequence="1" value="verified"/>
+                <element inactive_on_update="false" label="Pending" sequence="0" value="pending"/>
+                <element inactive_on_update="false" label="Rejected" sequence="2" value="rejected"/>
+            </choice>
+        </element>
+        <element label="Website" max_length="1024" name="website" type="url"/>
+        <element display="true" label="Name" max_length="100" name="name" type="string"/>
+        <element label="Verified On" max_length="40" name="verified_on" type="glide_date_time"/>
+    </element>
+</database>

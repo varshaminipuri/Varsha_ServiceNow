@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
-  <sp_widget action="INSERT_OR_UPDATE">
-    <sys_id>d757ef7fa2ac4c48a60ff2e4cb330749</sys_id>
-    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
-    <sys_update_name>sp_widget_d757ef7fa2ac4c48a60ff2e4cb330749</sys_update_name>
-    <category>custom</category>
-    <client_script><![CDATA[api.controller = function() {
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() {
     var c = this;
     c.showForm = false;
     c.submitting = false;
@@ -123,8 +120,8 @@
     };
 };
 ]]></client_script>
-    <controller_as>c</controller_as>
-    <css><![CDATA[.sp-manage-colleges .sp-panel {
+        <controller_as>c</controller_as>
+        <css>.sp-manage-colleges .sp-panel {
     border: 1px solid $border-tertiary;
     box-shadow: 0 1px 4px rgba($text-color, 0.07);
 }
@@ -199,22 +196,22 @@
     display: block;
     margin-bottom: 12px;
 }
-]]></css>
-    <data_table>sp_instance</data_table>
-    <demo_data/>
-    <description/>
-    <docs/>
-    <field_list/>
-    <has_preview>false</has_preview>
-    <id>linq-admin-manage-colleges</id>
-    <internal>false</internal>
-    <link>function link(scope, element, attrs, controller) {
-}</link>
-    <name>LINQ Admin Manage Colleges</name>
-    <option_schema/>
-    <public>false</public>
-    <roles/>
-    <script><![CDATA[(function() {
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-admin-manage-colleges</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>LINQ Admin Manage Colleges</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
     data.colleges = [];
     data.successMsg = '';
     data.errorMsg = '';
@@ -334,8 +331,20 @@
     }
 })();
 ]]></script>
-    <servicenow>false</servicenow>
-    <template><![CDATA[<div class="container-fluid sp-manage-colleges">
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 09:32:18</sys_created_on>
+        <sys_id>d757ef7fa2ac4c48a60ff2e4cb330749</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ Admin Manage Colleges</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_d757ef7fa2ac4c48a60ff2e4cb330749</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 09:32:18</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid sp-manage-colleges">
     <div class="alert alert-success" ng-if="c.data.successMsg" role="alert">
         <span class="glyphicon glyphicon-ok-sign"></span>
         {{c.data.successMsg}}
@@ -471,5 +480,5 @@
     </div>
 </div>
 ]]></template>
-  </sp_widget>
+    </sp_widget>
 </record_update>

@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl_role">
-  <sys_security_acl_role action="INSERT_OR_UPDATE">
-    <sys_id>42c253ec9208418497e1f6a31002635e</sys_id>
-    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
-    <sys_update_name>sys_security_acl_role_42c253ec9208418497e1f6a31002635e</sys_update_name>
-    <sys_security_acl>b771bde1ecea44119d572282ca4e62f9</sys_security_acl>
-    <sys_user_role name="x_2097092_linq.club_admin">fe207ca4a7ea43fda3d49fdb172cc557</sys_user_role>
-  </sys_security_acl_role>
+    <sys_security_acl_role action="INSERT_OR_UPDATE">
+        <sys_class_name>sys_security_acl_role</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 08:00:22</sys_created_on>
+        <sys_id>42c253ec9208418497e1f6a31002635e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_2097092_linq_club.</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_security_acl display_value="x_2097092_linq_club">b771bde1ecea44119d572282ca4e62f9</sys_security_acl>
+        <sys_update_name>sys_security_acl_role_42c253ec9208418497e1f6a31002635e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 08:00:22</sys_updated_on>
+        <sys_user_role display_value="x_2097092_linq.club_admin" name="x_2097092_linq.club_admin">fe207ca4a7ea43fda3d49fdb172cc557</sys_user_role>
+    </sys_security_acl_role>
 </record_update>

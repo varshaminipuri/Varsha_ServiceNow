@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
-  <sp_widget action="INSERT_OR_UPDATE">
-    <sys_id>d8e78fa356d74e3cb85678171c93e4b8</sys_id>
-    <sys_scope display_value="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
-    <sys_update_name>sp_widget_d8e78fa356d74e3cb85678171c93e4b8</sys_update_name>
-    <category>custom</category>
-    <client_script><![CDATA[api.controller = function($scope) {
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($scope) {
     var c = this;
     c.submitting = false;
     c.formData = {};
@@ -36,8 +33,8 @@
     };
 };
 ]]></client_script>
-    <controller_as>c</controller_as>
-    <css><![CDATA[.sp-card {
+        <controller_as>c</controller_as>
+        <css>.sp-card {
     border: 1px solid $border-tertiary;
     border-radius: $border-radius-large;
     box-shadow: 0 1px 4px rgba($text-color, 0.07);
@@ -83,7 +80,7 @@
     background: $background-primary;
     transition: border-color 0.15s, box-shadow 0.15s;
     width: 100%;
-    &:focus {
+    &amp;:focus {
         border-color: $brand-primary;
         box-shadow: 0 0 0 3px rgba($brand-primary, 0.15);
         outline: none;
@@ -97,7 +94,7 @@
     resize: vertical;
     min-height: 100px;
     transition: border-color 0.15s;
-    &:focus {
+    &amp;:focus {
         border-color: $brand-primary;
         box-shadow: 0 0 0 3px rgba($brand-primary, 0.15);
         outline: none;
@@ -117,12 +114,12 @@
     border: none;
     background: $brand-primary;
     color: $btn-primary-color;
-    &:hover:not(:disabled) {
+    &amp;:hover:not(:disabled) {
         background: $brand-primary-dark;
         box-shadow: 0 2px 8px rgba($brand-primary, 0.3);
         color: $btn-primary-color;
     }
-    &:disabled {
+    &amp;:disabled {
         opacity: 0.55;
         cursor: not-allowed;
     }
@@ -137,7 +134,7 @@
     font-size: $font-size-base;
     display: inline-flex;
     align-items: center;
-    &:hover {
+    &amp;:hover {
         background: $background-secondary;
     }
 }
@@ -153,22 +150,22 @@
 }
 .sp-spin {
     animation: sp-spin 0.8s linear infinite;
-}]]></css>
-    <data_table>sp_instance</data_table>
-    <demo_data/>
-    <description/>
-    <docs/>
-    <field_list/>
-    <has_preview>false</has_preview>
-    <id>linq-event-registration</id>
-    <internal>false</internal>
-    <link><![CDATA[function link(scope, element, attrs, controller) {
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-event-registration</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
 }]]></link>
-    <name>LINQ Event Registration</name>
-    <option_schema/>
-    <public>false</public>
-    <roles/>
-    <script><![CDATA[(function() {
+        <name>LINQ Event Registration</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
     data.event = null;
     data.fields = [];
     data.message = '';
@@ -247,8 +244,20 @@
     }
 })();
 ]]></script>
-    <servicenow>false</servicenow>
-    <template><![CDATA[<div class="container-fluid">
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 07:59:50</sys_created_on>
+        <sys_id>d8e78fa356d74e3cb85678171c93e4b8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ Event Registration</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_d8e78fa356d74e3cb85678171c93e4b8</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 07:59:50</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid">
     <!-- Success state -->
     <div ng-if="c.data.success" class="text-center" style="padding: 48px 24px;">
         <div class="alert alert-success" role="alert">
@@ -342,5 +351,5 @@
     </div>
 </div>
 ]]></template>
-  </sp_widget>
+    </sp_widget>
 </record_update>

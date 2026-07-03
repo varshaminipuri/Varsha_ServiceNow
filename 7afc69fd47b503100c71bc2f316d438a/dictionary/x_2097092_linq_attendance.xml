@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="0273d24f9a184de4bdf93bb54e0216cc" label="Attendance" name="x_2097092_linq_attendance" type="collection">
+        <element label="Scan Timestamp" max_length="40" name="scan_timestamp" type="glide_date_time"/>
+        <element label="Verified By" max_length="32" name="verified_by" reference="sys_user" type="reference"/>
+        <element label="Student" max_length="32" name="student" reference="sys_user" type="reference"/>
+        <element choice="1" default="attended" label="Status" max_length="40" name="status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Partially Attended" sequence="1" value="partially_attended"/>
+                <element inactive_on_update="false" label="Attended" sequence="0" value="attended"/>
+                <element inactive_on_update="false" label="Absent" sequence="2" value="absent"/>
+            </choice>
+        </element>
+        <element label="Registration" mandatory="true" max_length="32" name="registration" reference="x_2097092_linq_registration" type="reference"/>
+        <element label="Event" max_length="32" name="event" reference="x_2097092_linq_event" type="reference"/>
+        <element label="Location Notes" max_length="500" name="location_notes" type="string"/>
+        <index name="index">
+            <element name="event"/>
+        </index>
+        <index name="index2">
+            <element name="registration"/>
+        </index>
+        <index name="index3">
+            <element name="student"/>
+        </index>
+        <index name="index4">
+            <element name="verified_by"/>
+        </index>
+    </element>
+</database>
