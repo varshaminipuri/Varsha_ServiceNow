@@ -11,7 +11,9 @@
         <sandbox_callable>false</sandbox_callable>
         <script><![CDATA[var LinqQRHelper = Class.create();
 LinqQRHelper.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
-    initialize: function() {},
+    initialize: function() {
+        // Test comment for GitHub integration
+    },
 
     generateToken: function(studentSysId, eventSysId) {
         var gdt = new GlideDateTime();
