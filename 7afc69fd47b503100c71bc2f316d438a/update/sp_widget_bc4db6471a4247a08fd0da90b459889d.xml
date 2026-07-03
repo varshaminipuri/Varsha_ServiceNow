@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() {
+    var c = this;
+    c.loading = false;
+    c.filterStatus = c.data.currentFilter || 'pending_approval';
+    c.showRejectForm = null;
+    c.rejectReason = '';
+
+    c.approve = function(club) {
+        if (c.loading) return;
+        c.loading = true;
+        c.data.successMsg = '';
+        c.data.errorMsg = '';
+
+        c.server.get({
+            action: 'approve',
+            club_id: club.sys_id
+        }).then(function(r) {
+            c.data = r.data;
+            c.loading = false;
+        }, function() {
+            c.data.errorMsg = 'Network error. Please try again.';
+            c.loading = false;
+        });
+    };
+
+    c.reject = function(club) {
+        if (c.loading) return;
+        if (!c.rejectReason) {
+            c.data.errorMsg = 'Please provide a rejection reason.';
+            return;
+        }
+        c.loading = true;
+        c.data.successMsg = '';
+        c.data.errorMsg = '';
+
+        c.server.get({
+            action: 'reject',
+            club_id: club.sys_id,
+            reason: c.rejectReason
+        }).then(function(r) {
+            c.data = r.data;
+            c.showRejectForm = null;
+            c.rejectReason = '';
+            c.loading = false;
+        }, function() {
+            c.data.errorMsg = 'Network error. Please try again.';
+            c.loading = false;
+        });
+    };
+
+    c.toggleRejectForm = function(club) {
+        if (c.showRejectForm === club.sys_id) {
+            c.showRejectForm = null;
+            c.rejectReason = '';
+        } else {
+            c.showRejectForm = club.sys_id;
+            c.rejectReason = '';
+        }
+    };
+
+    c.applyFilter = function() {
+        if (c.loading) return;
+        c.loading = true;
+        c.data.successMsg = '';
+        c.data.errorMsg = '';
+
+        c.server.get({
+            action: 'filter',
+            status: c.filterStatus
+        }).then(function(r) {
+            c.data = r.data;
+            c.loading = false;
+        }, function() {
+            c.data.errorMsg = 'Network error. Please try again.';
+            c.loading = false;
+        });
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.sp-approve-clubs .sp-panel {
+    border: 1px solid $border-tertiary;
+    box-shadow: 0 1px 4px rgba($text-color, 0.07);
+}
+.sp-approve-clubs .sp-panel .panel-heading {
+    background: $background-secondary;
+    border-bottom: 1px solid $border-tertiary;
+    padding: 12px 15px;
+}
+.sp-approve-clubs .sp-panel .panel-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+    line-height: 30px;
+}
+.sp-approve-clubs .filter-label {
+    margin-right: 8px;
+    font-weight: 500;
+    color: $text-muted;
+}
+.sp-approve-clubs .sp-panel .table th {
+    color: $text-muted;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid $border-tertiary;
+}
+.sp-approve-clubs .sp-panel .table td {
+    vertical-align: middle;
+    color: $text-color;
+}
+.sp-approve-clubs .text-capitalize {
+    text-transform: capitalize;
+}
+.sp-approve-clubs .empty-state {
+    padding: 40px 20px;
+}
+.sp-approve-clubs .empty-icon {
+    font-size: 48px;
+    color: $text-muted;
+    display: block;
+    margin-bottom: 12px;
+}
+.sp-approve-clubs .reject-form-row {
+    background: $state-warning-bg;
+}
+.sp-approve-clubs .reject-form {
+    padding: 10px 0;
+}
+.sp-approve-clubs .reject-form label {
+    font-weight: 600;
+    color: $text-color;
+    margin-bottom: 6px;
+    display: block;
+}
+.sp-approve-clubs .reject-form textarea {
+    margin-bottom: 10px;
+}
+.sp-approve-clubs .reject-actions {
+    display: flex;
+    gap: 8px;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-admin-approve-clubs</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>LINQ Admin Approve Clubs</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    data.clubs = [];
+    data.message = '';
+    data.successMsg = '';
+    data.errorMsg = '';
+    data.isCollegeAdmin = false;
+    data.currentFilter = 'pending_approval';
+
+    try {
+        var userId = gs.getUserID();
+
+        // Get the current user's college
+        var userGr = new GlideRecord('sys_user');
+        userGr.setLimit(1);
+        if (!userGr.get(userId)) {
+            data.message = 'Unable to identify current user.';
+            return;
+        }
+
+        var collegeId = userGr.getValue('u_college') + '';
+        if (!collegeId || collegeId === 'null' || collegeId === '') {
+            data.message = 'You are not assigned to a college.';
+            return;
+        }
+
+        data.isCollegeAdmin = true;
+
+        // Handle approve action
+        if (input && input.action === 'approve') {
+            var approveGr = new GlideRecord('x_2097092_linq_club');
+            approveGr.setLimit(1);
+            if (approveGr.get(input.club_id)) {
+                // Verify club belongs to this college
+                if (approveGr.getValue('college') + '' === collegeId) {
+                    approveGr.setValue('status', 'active');
+                    approveGr.setValue('approved_on', new GlideDateTime());
+                    approveGr.update();
+                    data.successMsg = 'Club "' + (approveGr.getValue('name') + '') + '" has been approved.';
+                } else {
+                    data.errorMsg = 'You do not have permission to approve this club.';
+                }
+            } else {
+                data.errorMsg = 'Club not found.';
+            }
+        }
+
+        // Handle reject action
+        if (input && input.action === 'reject') {
+            var rejectGr = new GlideRecord('x_2097092_linq_club');
+            rejectGr.setLimit(1);
+            if (rejectGr.get(input.club_id)) {
+                // Verify club belongs to this college
+                if (rejectGr.getValue('college') + '' === collegeId) {
+                    rejectGr.setValue('status', 'draft');
+                    rejectGr.setValue('rejection_reason', input.reason || '');
+                    rejectGr.update();
+                    data.successMsg = 'Club "' + (rejectGr.getValue('name') + '') + '" has been rejected.';
+                } else {
+                    data.errorMsg = 'You do not have permission to reject this club.';
+                }
+            } else {
+                data.errorMsg = 'Club not found.';
+            }
+        }
+
+        // Determine filter status
+        var filterStatus = 'pending_approval';
+        if (input && input.action === 'filter' && input.status) {
+            filterStatus = input.status;
+        }
+        data.currentFilter = filterStatus;
+
+        // Get clubs for this college based on filter
+        var clubGr = new GlideRecord('x_2097092_linq_club');
+        clubGr.addQuery('college', collegeId);
+        if (filterStatus !== 'all') {
+            clubGr.addQuery('status', filterStatus);
+        }
+        clubGr.orderByDesc('sys_created_on');
+        clubGr.setLimit(100);
+        clubGr.query();
+
+        while (clubGr.next()) {
+            data.clubs.push({
+                sys_id: clubGr.getUniqueValue(),
+                name: clubGr.getValue('name') + '',
+                category: clubGr.getValue('category') + '',
+                created_by: clubGr.getDisplayValue('created_by') + '',
+                status: clubGr.getValue('status') + '',
+                date_submitted: clubGr.getDisplayValue('sys_created_on') + ''
+            });
+        }
+    } catch (e) {
+        gs.error('linq-admin-approve-clubs error: ' + e.message);
+        data.errorMsg = 'An error occurred.';
+    }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 09:32:18</sys_created_on>
+        <sys_id>bc4db6471a4247a08fd0da90b459889d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ Admin Approve Clubs</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_bc4db6471a4247a08fd0da90b459889d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 09:32:18</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid sp-approve-clubs">
+    <div class="alert alert-success" ng-if="c.data.successMsg" role="alert">
+        <span class="glyphicon glyphicon-ok-sign"></span>
+        {{c.data.successMsg}}
+    </div>
+    <div class="alert alert-danger" ng-if="c.data.errorMsg" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign"></span>
+        {{c.data.errorMsg}}
+    </div>
+    <div class="alert alert-warning" ng-if="c.data.message && !c.data.isCollegeAdmin" role="alert">
+        <span class="glyphicon glyphicon-info-sign"></span>
+        {{c.data.message}}
+    </div>
+
+    <div ng-if="c.data.isCollegeAdmin">
+        <div class="panel panel-default sp-panel">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h4 class="panel-title">
+                            <span class="glyphicon glyphicon-check"></span> Manage Clubs
+                        </h4>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <div class="form-inline">
+                            <label class="filter-label">Status:</label>
+                            <select class="form-control input-sm" ng-model="c.filterStatus" ng-change="c.applyFilter()">
+                                <option value="all">All</option>
+                                <option value="pending_approval">Pending Approval</option>
+                                <option value="active">Active</option>
+                                <option value="suspended">Suspended</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body" ng-if="c.data.clubs.length === 0">
+                <div class="empty-state text-center">
+                    <span class="glyphicon glyphicon-inbox empty-icon"></span>
+                    <p class="text-muted">No clubs match the selected filter.</p>
+                </div>
+            </div>
+
+            <table class="table table-striped table-hover" ng-if="c.data.clubs.length > 0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Created By</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat-start="club in c.data.clubs track by club.sys_id">
+                        <td><strong>{{club.name}}</strong></td>
+                        <td><span class="text-capitalize">{{club.category}}</span></td>
+                        <td>{{club.created_by}}</td>
+                        <td>
+                            <span class="label" ng-class="{
+                                'label-warning': club.status === 'pending_approval',
+                                'label-success': club.status === 'active',
+                                'label-danger': club.status === 'suspended',
+                                'label-default': club.status === 'archived',
+                                'label-info': club.status === 'draft'
+                            }">{{club.status}}</span>
+                        </td>
+                        <td>
+                            <div ng-if="club.status === 'pending_approval'">
+                                <button type="button" class="btn btn-xs btn-success" ng-click="c.approve(club)" ng-disabled="c.loading">
+                                    <span class="glyphicon glyphicon-ok"></span> Approve
+                                </button>
+                                <button type="button" class="btn btn-xs btn-danger" ng-click="c.toggleRejectForm(club)" ng-disabled="c.loading">
+                                    <span class="glyphicon glyphicon-remove"></span> Reject
+                                </button>
+                            </div>
+                            <span ng-if="club.status !== 'pending_approval'" class="text-muted">—</span>
+                        </td>
+                    </tr>
+                    <tr ng-repeat-end ng-if="c.showRejectForm === club.sys_id">
+                        <td colspan="5" class="reject-form-row">
+                            <div class="reject-form">
+                                <label>Rejection Reason:</label>
+                                <textarea class="form-control" ng-model="c.rejectReason" rows="2" placeholder="Provide a reason for rejection..."></textarea>
+                                <div class="reject-actions">
+                                    <button type="button" class="btn btn-sm btn-danger" ng-click="c.reject(club)" ng-disabled="c.loading || !c.rejectReason">
+                                        Confirm Reject
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-default" ng-click="c.toggleRejectForm(club)">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

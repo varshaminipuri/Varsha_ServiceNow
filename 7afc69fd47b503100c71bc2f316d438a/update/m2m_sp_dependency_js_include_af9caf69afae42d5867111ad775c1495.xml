@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_dependency_js_include">
+    <m2m_sp_dependency_js_include action="INSERT_OR_UPDATE">
+        <order>100</order>
+        <sp_dependency display_value="LINQ html5-qrcode">d4e48cdece2e468aaf88be7f4cb7cb8e</sp_dependency>
+        <sp_js_include display_value="html5-qrcode CDN">1879591ca63c4548a55f18c514986a69</sp_js_include>
+        <sys_class_name>m2m_sp_dependency_js_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 07:59:49</sys_created_on>
+        <sys_id>af9caf69afae42d5867111ad775c1495</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>m2m_sp_dependency_js_include_af9caf69afae42d5867111ad775c1495</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 07:59:49</sys_updated_on>
+    </m2m_sp_dependency_js_include>
+</record_update>

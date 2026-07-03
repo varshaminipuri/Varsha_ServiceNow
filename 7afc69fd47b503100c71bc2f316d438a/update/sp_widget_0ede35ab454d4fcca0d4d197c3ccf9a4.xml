@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() {
+    var c = this;
+    c.selectedEvent = '';
+    c.loading = false;
+
+    c.loadAttendees = function() {
+        if (!c.selectedEvent) {
+            c.data.attendees = [];
+            c.data.selectedEventTitle = '';
+            c.data.totalRegistered = 0;
+            c.data.totalCheckedIn = 0;
+            return;
+        }
+        if (c.loading) return;
+        c.loading = true;
+        c.data.errorMsg = '';
+
+        c.server.get({
+            action: 'get_attendees',
+            event_id: c.selectedEvent
+        }).then(function(r) {
+            c.data = r.data;
+            c.loading = false;
+        }, function() {
+            c.data.errorMsg = 'Network error. Please try again.';
+            c.loading = false;
+        });
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.sp-attendees .panel-heading {
+    padding: 12px 20px;
+}
+.sp-attendees .panel-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+}
+.sp-attendees .panel-title .glyphicon {
+    margin-right: 8px;
+    color: $brand-primary;
+}
+.sp-attendee-stats {
+    margin-bottom: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid $border-tertiary;
+}
+.sp-attendee-stats .label {
+    font-size: 13px;
+    padding: 4px 10px;
+}
+.sp-input:focus {
+    border-color: $brand-primary;
+    box-shadow: 0 0 0 2px rgba($brand-primary, 0.15);
+}
+.sp-empty-state {
+    padding: 48px 24px;
+}
+.sp-empty-icon {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 12px;
+    opacity: 0.35;
+    color: $text-muted;
+}
+.sp-empty-state h4 {
+    font-weight: 600;
+    color: $text-color;
+    margin-bottom: 8px;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-admin-attendees</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>LINQ Admin Attendees</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    data.events = [];
+    data.attendees = [];
+    data.selectedEventTitle = '';
+    data.message = '';
+    data.errorMsg = '';
+    data.isAdmin = false;
+    data.totalRegistered = 0;
+    data.totalCheckedIn = 0;
+
+    try {
+        var userId = gs.getUserID();
+
+        // Find clubs where user is president or vice_president
+        var clubIds = [];
+        var memGr = new GlideRecord('x_2097092_linq_club_membership');
+        memGr.addQuery('member', userId);
+        memGr.addQuery('role', 'IN', 'president,vice_president');
+        memGr.addQuery('status', 'active');
+        memGr.setLimit(50);
+        memGr.query();
+
+        while (memGr.next()) {
+            clubIds.push(memGr.getValue('club') + '');
+        }
+
+        if (clubIds.length === 0) {
+            data.message = 'You are not an admin of any clubs.';
+            return;
+        }
+
+        data.isAdmin = true;
+
+        // Get events for managed clubs (for dropdown)
+        var evGr = new GlideRecord('x_2097092_linq_event');
+        evGr.addQuery('club', 'IN', clubIds.join(','));
+        evGr.orderByDesc('event_date');
+        evGr.setLimit(100);
+        evGr.query();
+
+        while (evGr.next()) {
+            data.events.push({
+                sys_id: evGr.getUniqueValue(),
+                title: evGr.getValue('title') + '',
+                event_date: evGr.getDisplayValue('event_date') + ''
+            });
+        }
+
+        // Handle get_attendees action
+        if (input && input.action === 'get_attendees' && input.event_id) {
+            data.attendees = [];
+            data.totalRegistered = 0;
+            data.totalCheckedIn = 0;
+
+            // Get event title
+            var selEvent = new GlideRecord('x_2097092_linq_event');
+            if (selEvent.get(input.event_id)) {
+                data.selectedEventTitle = selEvent.getValue('title') + '';
+            }
+
+            // Get registrations for this event
+            var regGr = new GlideRecord('x_2097092_linq_registration');
+            regGr.addQuery('event', input.event_id);
+            regGr.setLimit(500);
+            regGr.query();
+
+            while (regGr.next()) {
+                var regId = regGr.getUniqueValue();
+                var studentName = regGr.getDisplayValue('student') + '';
+                var regStatus = regGr.getValue('status') + '';
+                data.totalRegistered++;
+
+                // Check for attendance record
+                var checkinStatus = 'Not checked in';
+                var scanTime = '';
+
+                var attGr = new GlideRecord('x_2097092_linq_attendance');
+                attGr.addQuery('registration', regId);
+                attGr.setLimit(1);
+                attGr.query();
+
+                if (attGr.next()) {
+                    checkinStatus = 'Checked in';
+                    scanTime = attGr.getDisplayValue('scan_timestamp') + '';
+                    data.totalCheckedIn++;
+                }
+
+                data.attendees.push({
+                    sys_id: regId,
+                    student_name: studentName,
+                    registration_status: regStatus,
+                    checkin_status: checkinStatus,
+                    scan_time: scanTime
+                });
+            }
+        }
+    } catch (e) {
+        gs.error('linq-admin-attendees error: ' + e.message);
+        data.errorMsg = 'An error occurred loading attendee data.';
+    }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 09:32:17</sys_created_on>
+        <sys_id>0ede35ab454d4fcca0d4d197c3ccf9a4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ Admin Attendees</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_0ede35ab454d4fcca0d4d197c3ccf9a4</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 09:32:17</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid sp-attendees">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <span class="glyphicon glyphicon-user"></span> Event Attendees
+            </h3>
+        </div>
+        <div class="panel-body">
+            <!-- Messages -->
+            <div class="alert alert-warning" ng-if="c.data.message && !c.data.isAdmin" role="alert">
+                <span class="glyphicon glyphicon-info-sign"></span>
+                {{c.data.message}}
+            </div>
+            <div class="alert alert-danger" ng-if="c.data.errorMsg" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
+                {{c.data.errorMsg}}
+            </div>
+
+            <div ng-if="c.data.isAdmin">
+                <!-- Event Selector -->
+                <div class="form-group">
+                    <label for="eventSelector">Select Event</label>
+                    <div class="input-group">
+                        <select id="eventSelector" class="form-control sp-input" ng-model="c.selectedEvent" ng-change="c.loadAttendees()">
+                            <option value="">-- Select an Event --</option>
+                            <option ng-repeat="event in c.data.events track by event.sys_id" value="{{event.sys_id}}">{{event.title}} ({{event.event_date}})</option>
+                        </select>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="c.loadAttendees()" ng-disabled="!c.selectedEvent || c.loading">
+                                <span class="glyphicon glyphicon-refresh"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Summary Stats -->
+                <div class="row sp-attendee-stats" ng-if="c.data.selectedEventTitle">
+                    <div class="col-sm-4">
+                        <strong>Event:</strong> {{c.data.selectedEventTitle}}
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="label label-info">Registered: {{c.data.totalRegistered}}</span>
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="label label-success">Checked In: {{c.data.totalCheckedIn}}</span>
+                    </div>
+                </div>
+
+                <!-- Loading indicator -->
+                <div class="text-center" ng-if="c.loading">
+                    <span class="glyphicon glyphicon-refresh fa-spin"></span> Loading...
+                </div>
+
+                <!-- Attendees Table -->
+                <table class="table table-striped table-hover" ng-if="c.data.attendees.length > 0 && !c.loading">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Registration Status</th>
+                            <th>Check-in Status</th>
+                            <th>Scan Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="att in c.data.attendees track by att.sys_id">
+                            <td>{{att.student_name}}</td>
+                            <td>
+                                <span class="label" ng-class="{
+                                    'label-success': att.registration_status === 'confirmed' || att.registration_status === 'checked_in',
+                                    'label-info': att.registration_status === 'registered',
+                                    'label-danger': att.registration_status === 'cancelled',
+                                    'label-default': att.registration_status !== 'confirmed' && att.registration_status !== 'checked_in' && att.registration_status !== 'registered' && att.registration_status !== 'cancelled'
+                                }">{{att.registration_status}}</span>
+                            </td>
+                            <td>
+                                <span class="label" ng-class="att.checkin_status === 'Checked in' ? 'label-success' : 'label-default'">
+                                    {{att.checkin_status}}
+                                </span>
+                            </td>
+                            <td>{{att.scan_time || '—'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Empty state: no event selected -->
+                <div class="sp-empty-state text-center" ng-if="!c.selectedEvent && !c.loading">
+                    <span class="glyphicon glyphicon-hand-up sp-empty-icon"></span>
+                    <h4>Select an event</h4>
+                    <p class="text-muted">Choose an event from the dropdown above to view attendees.</p>
+                </div>
+
+                <!-- Empty state: no attendees -->
+                <div class="sp-empty-state text-center" ng-if="c.selectedEvent && c.data.attendees.length === 0 && !c.loading">
+                    <span class="glyphicon glyphicon-user sp-empty-icon"></span>
+                    <h4>No attendees yet</h4>
+                    <p class="text-muted">No one has registered for this event yet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

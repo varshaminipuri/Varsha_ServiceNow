@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() {
+    var c = this;
+    c.showForm = false;
+    c.submitting = false;
+    c.newEvent = {};
+
+    c.toggleForm = function() {
+        c.showForm = !c.showForm;
+        if (c.showForm) {
+            c.newEvent = {};
+            c.data.successMsg = '';
+            c.data.errorMsg = '';
+        }
+    };
+
+    c.createEvent = function() {
+        if (c.submitting) return;
+        if (!c.newEvent.title || !c.newEvent.club) {
+            c.data.errorMsg = 'Please fill in at least the Title and Club fields.';
+            return;
+        }
+        c.submitting = true;
+        c.data.successMsg = '';
+        c.data.errorMsg = '';
+
+        c.server.get({
+            action: 'create_event',
+            title: c.newEvent.title,
+            description: c.newEvent.description || '',
+            venue: c.newEvent.venue || '',
+            event_date: c.newEvent.event_date || '',
+            start_time: c.newEvent.start_time || '',
+            end_time: c.newEvent.end_time || '',
+            capacity: c.newEvent.capacity || '0',
+            scope: c.newEvent.scope || 'college_only',
+            club: c.newEvent.club
+        }).then(function(r) {
+            c.data = r.data;
+            c.submitting = false;
+            if (r.data.successMsg) {
+                c.showForm = false;
+                c.newEvent = {};
+            }
+        }, function() {
+            c.data.errorMsg = 'Network error. Please try again.';
+            c.submitting = false;
+        });
+    };
+
+    c.updateStatus = function(event, status) {
+        if (c.submitting) return;
+        c.submitting = true;
+        c.data.successMsg = '';
+        c.data.errorMsg = '';
+
+        c.server.get({
+            action: 'update_status',
+            event_id: event.sys_id,
+            new_status: status
+        }).then(function(r) {
+            c.data = r.data;
+            c.submitting = false;
+        }, function() {
+            c.data.errorMsg = 'Network error. Please try again.';
+            c.submitting = false;
+        });
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.sp-manage-events .panel-heading {
+    padding: 12px 20px;
+}
+.sp-manage-events .panel-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-color;
+    line-height: 30px;
+}
+.sp-manage-events .panel-title .glyphicon {
+    margin-right: 8px;
+    color: $brand-primary;
+}
+.sp-create-form {
+    background: $background-secondary;
+    border: 1px solid $border-tertiary;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+.sp-create-form h4 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: $text-color;
+}
+.sp-btn-primary {
+    background: $brand-primary;
+    border: none;
+    color: $btn-primary-color;
+    font-weight: 500;
+    &amp;:hover:not(:disabled) {
+        background: $brand-primary-dark;
+        box-shadow: 0 2px 8px rgba($brand-primary, 0.3);
+        color: $btn-primary-color;
+    }
+    &amp;:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+.sp-input:focus {
+    border-color: $brand-primary;
+    box-shadow: 0 0 0 2px rgba($brand-primary, 0.15);
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-admin-manage-events</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>LINQ Admin Manage Events</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    data.events = [];
+    data.clubs = [];
+    data.message = '';
+    data.successMsg = '';
+    data.errorMsg = '';
+    data.isAdmin = false;
+
+    try {
+        var userId = gs.getUserID();
+
+        // Find clubs where user is president or vice_president
+        var clubIds = [];
+        var memGr = new GlideRecord('x_2097092_linq_club_membership');
+        memGr.addQuery('member', userId);
+        memGr.addQuery('role', 'IN', 'president,vice_president');
+        memGr.addQuery('status', 'active');
+        memGr.setLimit(50);
+        memGr.query();
+
+        while (memGr.next()) {
+            var clubId = memGr.getValue('club') + '';
+            clubIds.push(clubId);
+        }
+
+        if (clubIds.length === 0) {
+            data.message = 'You are not an admin of any clubs.';
+            return;
+        }
+
+        data.isAdmin = true;
+
+        // Get club details for dropdown
+        var clubGr = new GlideRecord('x_2097092_linq_club');
+        clubGr.addQuery('sys_id', 'IN', clubIds.join(','));
+        clubGr.setLimit(50);
+        clubGr.query();
+
+        while (clubGr.next()) {
+            data.clubs.push({
+                sys_id: clubGr.getUniqueValue(),
+                name: clubGr.getValue('name') + ''
+            });
+        }
+
+        // Handle create event action
+        if (input && input.action === 'create_event') {
+            var newEvent = new GlideRecord('x_2097092_linq_event');
+            newEvent.initialize();
+            newEvent.setValue('title', input.title || '');
+            newEvent.setValue('description', input.description || '');
+            newEvent.setValue('venue', input.venue || '');
+            newEvent.setValue('event_date', input.event_date || '');
+            newEvent.setValue('start_time', input.start_time || '');
+            newEvent.setValue('end_time', input.end_time || '');
+            newEvent.setValue('capacity', input.capacity || '0');
+            newEvent.setValue('scope', input.scope || 'college_only');
+            newEvent.setValue('club', input.club || '');
+            newEvent.setValue('status', 'draft');
+
+            var newId = newEvent.insert();
+            if (newId) {
+                data.successMsg = 'Event created successfully!';
+            } else {
+                data.errorMsg = 'Failed to create event. Please try again.';
+            }
+        }
+
+        // Handle update status action
+        if (input && input.action === 'update_status') {
+            var updGr = new GlideRecord('x_2097092_linq_event');
+            if (updGr.get(input.event_id)) {
+                updGr.setValue('status', input.new_status);
+                updGr.update();
+                data.successMsg = 'Event status updated to ' + input.new_status + '.';
+            } else {
+                data.errorMsg = 'Event not found.';
+            }
+        }
+
+        // Load all events for managed clubs
+        var evGr = new GlideRecord('x_2097092_linq_event');
+        evGr.addQuery('club', 'IN', clubIds.join(','));
+        evGr.orderByDesc('event_date');
+        evGr.setLimit(100);
+        evGr.query();
+
+        while (evGr.next()) {
+            data.events.push({
+                sys_id: evGr.getUniqueValue(),
+                title: evGr.getValue('title') + '',
+                club_name: evGr.getDisplayValue('club') + '',
+                event_date: evGr.getDisplayValue('event_date') + '',
+                status: evGr.getValue('status') + '',
+                venue: evGr.getValue('venue') + ''
+            });
+        }
+    } catch (e) {
+        gs.error('linq-admin-manage-events error: ' + e.message);
+        data.errorMsg = 'An error occurred.';
+    }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 09:32:18</sys_created_on>
+        <sys_id>46a6cf5fe57b405e9eb457ae0c6bda1f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ Admin Manage Events</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_46a6cf5fe57b405e9eb457ae0c6bda1f</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 09:32:18</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid sp-manage-events">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title pull-left">
+                <span class="glyphicon glyphicon-list-alt"></span> Manage Events
+            </h3>
+            <button type="button" class="btn btn-primary btn-sm pull-right sp-btn-primary" ng-click="c.toggleForm()" ng-if="c.data.isAdmin">
+                <span class="glyphicon" ng-class="c.showForm ? 'glyphicon-minus' : 'glyphicon-plus'"></span>
+                {{c.showForm ? 'Cancel' : 'Create Event'}}
+            </button>
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel-body">
+            <!-- Messages -->
+            <div class="alert alert-success" ng-if="c.data.successMsg" role="alert">
+                <span class="glyphicon glyphicon-ok-sign"></span>
+                {{c.data.successMsg}}
+            </div>
+            <div class="alert alert-danger" ng-if="c.data.errorMsg" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
+                {{c.data.errorMsg}}
+            </div>
+            <div class="alert alert-warning" ng-if="c.data.message && !c.data.isAdmin" role="alert">
+                <span class="glyphicon glyphicon-info-sign"></span>
+                {{c.data.message}}
+            </div>
+
+            <!-- Create Event Form -->
+            <div class="sp-create-form" ng-if="c.showForm">
+                <h4>Create New Event</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="eventClub">Club *</label>
+                            <select id="eventClub" class="form-control sp-input" ng-model="c.newEvent.club">
+                                <option value="">-- Select Club --</option>
+                                <option ng-repeat="club in c.data.clubs track by club.sys_id" value="{{club.sys_id}}">{{club.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="eventTitle">Title *</label>
+                            <input type="text" id="eventTitle" class="form-control sp-input" ng-model="c.newEvent.title" placeholder="Event title" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="eventDesc">Description</label>
+                    <textarea id="eventDesc" class="form-control sp-input" ng-model="c.newEvent.description" rows="3" placeholder="Event description"></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="eventVenue">Venue</label>
+                            <input type="text" id="eventVenue" class="form-control sp-input" ng-model="c.newEvent.venue" placeholder="Venue" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="eventDate">Event Date</label>
+                            <input type="text" id="eventDate" class="form-control sp-input" ng-model="c.newEvent.event_date" placeholder="YYYY-MM-DD" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="eventCapacity">Capacity</label>
+                            <input type="number" id="eventCapacity" class="form-control sp-input" ng-model="c.newEvent.capacity" placeholder="0" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="eventStart">Start Time</label>
+                            <input type="text" id="eventStart" class="form-control sp-input" ng-model="c.newEvent.start_time" placeholder="HH:MM:SS" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="eventEnd">End Time</label>
+                            <input type="text" id="eventEnd" class="form-control sp-input" ng-model="c.newEvent.end_time" placeholder="HH:MM:SS" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="eventScope">Scope</label>
+                            <select id="eventScope" class="form-control sp-input" ng-model="c.newEvent.scope">
+                                <option value="college_only">College Only</option>
+                                <option value="inter_college">Inter-College</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary sp-btn-primary" ng-click="c.createEvent()" ng-disabled="c.submitting">
+                        <span class="glyphicon glyphicon-ok"></span> {{c.submitting ? 'Creating...' : 'Create Event'}}
+                    </button>
+                    <button type="button" class="btn btn-default" ng-click="c.toggleForm()">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Events Table -->
+            <div ng-if="c.data.isAdmin">
+                <table class="table table-striped table-hover" ng-if="c.data.events.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Club</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="event in c.data.events track by event.sys_id">
+                            <td>{{event.title}}</td>
+                            <td>{{event.club_name}}</td>
+                            <td>{{event.event_date}}</td>
+                            <td>
+                                <span class="label" ng-class="{
+                                    'label-success': event.status === 'live',
+                                    'label-info': event.status === 'approved',
+                                    'label-warning': event.status === 'submitted' || event.status === 'draft',
+                                    'label-danger': event.status === 'cancelled',
+                                    'label-default': event.status === 'completed'
+                                }">{{event.status}}</span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-xs btn-info" ng-if="event.status === 'draft'" ng-click="c.updateStatus(event, 'submitted')" ng-disabled="c.submitting">
+                                    Submit
+                                </button>
+                                <button type="button" class="btn btn-xs btn-danger" ng-if="event.status !== 'cancelled' && event.status !== 'completed'" ng-click="c.updateStatus(event, 'cancelled')" ng-disabled="c.submitting">
+                                    Cancel
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="text-muted text-center" ng-if="c.data.events.length === 0">No events found for your clubs.</p>
+            </div>
+        </div>
+    </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

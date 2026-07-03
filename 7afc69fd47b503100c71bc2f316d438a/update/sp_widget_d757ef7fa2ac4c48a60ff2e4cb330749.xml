@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() {
+    var c = this;
+    c.showForm = false;
+    c.submitting = false;
+    c.newCollege = {};
+    c.filterStatus = 'all';
+
+    c.toggleForm = function() {
+        c.showForm = !c.showForm;
+        if (c.showForm) {
+            c.newCollege = {};
+            c.data.successMsg = '';
+            c.data.errorMsg = '';
+        }
+    };
+
+    c.createCollege = function() {
+        if (c.submitting) return;
+        if (!c.newCollege.name || !c.newCollege.code) {
+            c.data.errorMsg = 'Please provide at least a Name and Code.';
+            return;
+        }
+        c.submitting = true;
+        c.data.successMsg = '';
+        c.data.errorMsg = '';
+
+        c.server.get({
+            action: 'create_college',
+            name: c.newCollege.name,
+            code: c.newCollege.code,
+            email_domain: c.newCollege.email_domain || '',
+            website: c.newCollege.website || '',
+            address: c.newCollege.address || ''
+        }).then(function(r) {
+            c.data = r.data;
+            c.submitting = false;
+            if (r.data.successMsg) {
+                c.showForm = false;
+                c.newCollege = {};
+            }
+        }, function() {
+            c.data.errorMsg = 'Network error. Please try again.';
+            c.submitting = false;
+        });
+    };
+
+    c.verifyCollege = function(college) {
+        if (c.submitting) return;
+        c.submitting = true;
+        c.data.successMsg = '';
+        c.data.errorMsg = '';
+
+        c.server.get({
+            action: 'verify',
+            college_id: college.sys_id
+        }).then(function(r) {
+            c.data = r.data;
+            c.submitting = false;
+        }, function() {
+            c.data.errorMsg = 'Network error. Please try again.';
+            c.submitting = false;
+        });
+    };
+
+    c.suspendCollege = function(college) {
+        if (c.submitting) return;
+        c.submitting = true;
+        c.data.successMsg = '';
+        c.data.errorMsg = '';
+
+        c.server.get({
+            action: 'suspend',
+            college_id: college.sys_id
+        }).then(function(r) {
+            c.data = r.data;
+            c.submitting = false;
+        }, function() {
+            c.data.errorMsg = 'Network error. Please try again.';
+            c.submitting = false;
+        });
+    };
+
+    c.rejectCollege = function(college) {
+        if (c.submitting) return;
+        c.submitting = true;
+        c.data.successMsg = '';
+        c.data.errorMsg = '';
+
+        c.server.get({
+            action: 'reject',
+            college_id: college.sys_id
+        }).then(function(r) {
+            c.data = r.data;
+            c.submitting = false;
+        }, function() {
+            c.data.errorMsg = 'Network error. Please try again.';
+            c.submitting = false;
+        });
+    };
+
+    c.applyFilter = function() {
+        if (c.submitting) return;
+        c.submitting = true;
+        c.data.successMsg = '';
+        c.data.errorMsg = '';
+
+        c.server.get({
+            action: 'filter',
+            filter_status: c.filterStatus
+        }).then(function(r) {
+            c.data = r.data;
+            c.submitting = false;
+        }, function() {
+            c.data.errorMsg = 'Network error. Please try again.';
+            c.submitting = false;
+        });
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.sp-manage-colleges .sp-panel {
+    border: 1px solid $border-tertiary;
+    box-shadow: 0 1px 4px rgba($text-color, 0.07);
+}
+.sp-manage-colleges .sp-panel .panel-heading {
+    background: $background-secondary;
+    border-bottom: 1px solid $border-tertiary;
+    padding: 12px 15px;
+}
+.sp-manage-colleges .sp-panel .panel-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+    line-height: 30px;
+}
+.sp-manage-colleges .header-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.sp-manage-colleges .filter-label {
+    margin-right: 4px;
+    font-weight: 500;
+    color: $text-muted;
+}
+
+/* Create Form */
+.sp-manage-colleges .create-form {
+    background: $state-info-bg;
+    border-bottom: 1px solid $border-tertiary;
+}
+.sp-manage-colleges .create-form h5 {
+    font-weight: 600;
+    color: $text-color;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+.sp-manage-colleges .create-form .form-group label {
+    font-weight: 500;
+    color: $text-color;
+}
+.sp-manage-colleges .form-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+}
+
+/* Table */
+.sp-manage-colleges .sp-panel .table th {
+    color: $text-muted;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid $border-tertiary;
+}
+.sp-manage-colleges .sp-panel .table td {
+    vertical-align: middle;
+    color: $text-color;
+}
+.sp-manage-colleges .action-na {
+    font-size: 12px;
+}
+
+/* Empty State */
+.sp-manage-colleges .empty-state {
+    padding: 40px 20px;
+}
+.sp-manage-colleges .empty-icon {
+    font-size: 48px;
+    color: $text-muted;
+    display: block;
+    margin-bottom: 12px;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-admin-manage-colleges</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>LINQ Admin Manage Colleges</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    data.colleges = [];
+    data.successMsg = '';
+    data.errorMsg = '';
+    data.message = '';
+
+    try {
+        // Handle create college action
+        if (input && input.action === 'create_college') {
+            var newCollege = new GlideRecord('x_2097092_linq_college');
+            newCollege.initialize();
+            newCollege.setValue('name', input.name || '');
+            newCollege.setValue('code', input.code || '');
+            newCollege.setValue('email_domain', input.email_domain || '');
+            newCollege.setValue('website', input.website || '');
+            newCollege.setValue('address', input.address || '');
+            newCollege.setValue('status', 'pending');
+
+            var newId = newCollege.insert();
+            if (newId) {
+                data.successMsg = 'College created successfully!';
+            } else {
+                data.errorMsg = 'Failed to create college. Please try again.';
+            }
+        }
+
+        // Handle verify action
+        if (input && input.action === 'verify') {
+            var verifyGr = new GlideRecord('x_2097092_linq_college');
+            verifyGr.setLimit(1);
+            if (verifyGr.get(input.college_id)) {
+                verifyGr.setValue('status', 'verified');
+                verifyGr.setValue('verified_on', new GlideDateTime());
+                verifyGr.update();
+                data.successMsg = 'College verified successfully!';
+            } else {
+                data.errorMsg = 'College not found.';
+            }
+        }
+
+        // Handle suspend action
+        if (input && input.action === 'suspend') {
+            var suspendGr = new GlideRecord('x_2097092_linq_college');
+            suspendGr.setLimit(1);
+            if (suspendGr.get(input.college_id)) {
+                suspendGr.setValue('status', 'suspended');
+                suspendGr.update();
+                data.successMsg = 'College suspended.';
+            } else {
+                data.errorMsg = 'College not found.';
+            }
+        }
+
+        // Handle reject action
+        if (input && input.action === 'reject') {
+            var rejectGr = new GlideRecord('x_2097092_linq_college');
+            rejectGr.setLimit(1);
+            if (rejectGr.get(input.college_id)) {
+                rejectGr.setValue('status', 'rejected');
+                rejectGr.update();
+                data.successMsg = 'College rejected.';
+            } else {
+                data.errorMsg = 'College not found.';
+            }
+        }
+
+        // Load colleges (with optional filter)
+        var filterStatus = '';
+        if (input && input.action === 'filter' && input.filter_status && input.filter_status !== 'all') {
+            filterStatus = input.filter_status;
+        }
+
+        var collegeGr = new GlideRecord('x_2097092_linq_college');
+        if (filterStatus) {
+            collegeGr.addQuery('status', filterStatus);
+        }
+        collegeGr.orderBy('name');
+        collegeGr.setLimit(200);
+        collegeGr.query();
+
+        while (collegeGr.next()) {
+            var collegeId = collegeGr.getUniqueValue();
+
+            // Count clubs for this college
+            var clubGa = new GlideAggregate('x_2097092_linq_club');
+            clubGa.addQuery('college', collegeId);
+            clubGa.addAggregate('COUNT');
+            clubGa.query();
+            var clubCount = 0;
+            if (clubGa.next()) {
+                clubCount = parseInt(clubGa.getAggregate('COUNT'), 10) || 0;
+            }
+
+            // Count events for this college
+            var eventGa = new GlideAggregate('x_2097092_linq_event');
+            eventGa.addQuery('college', collegeId);
+            eventGa.addAggregate('COUNT');
+            eventGa.query();
+            var eventCount = 0;
+            if (eventGa.next()) {
+                eventCount = parseInt(eventGa.getAggregate('COUNT'), 10) || 0;
+            }
+
+            data.colleges.push({
+                sys_id: collegeId,
+                name: collegeGr.getValue('name') + '',
+                code: collegeGr.getValue('code') + '',
+                email_domain: collegeGr.getValue('email_domain') + '',
+                status: collegeGr.getValue('status') + '',
+                website: collegeGr.getValue('website') + '',
+                clubs_count: clubCount,
+                events_count: eventCount
+            });
+        }
+    } catch (e) {
+        gs.error('linq-admin-manage-colleges error: ' + e.message);
+        data.errorMsg = 'An error occurred loading college data.';
+    }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 09:32:18</sys_created_on>
+        <sys_id>d757ef7fa2ac4c48a60ff2e4cb330749</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ Admin Manage Colleges</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_d757ef7fa2ac4c48a60ff2e4cb330749</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 09:32:18</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid sp-manage-colleges">
+    <div class="alert alert-success" ng-if="c.data.successMsg" role="alert">
+        <span class="glyphicon glyphicon-ok-sign"></span>
+        {{c.data.successMsg}}
+    </div>
+    <div class="alert alert-danger" ng-if="c.data.errorMsg" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign"></span>
+        {{c.data.errorMsg}}
+    </div>
+
+    <div class="panel panel-default sp-panel">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-sm-4">
+                    <h4 class="panel-title">
+                        <span class="glyphicon glyphicon-education"></span> Manage Colleges
+                    </h4>
+                </div>
+                <div class="col-sm-8 text-right">
+                    <div class="form-inline header-controls">
+                        <label class="filter-label">Status:</label>
+                        <select class="form-control input-sm" ng-model="c.filterStatus" ng-change="c.applyFilter()">
+                            <option value="all">All</option>
+                            <option value="pending">Pending</option>
+                            <option value="verified">Verified</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="suspended">Suspended</option>
+                        </select>
+                        <button type="button" class="btn btn-primary btn-sm" ng-click="c.toggleForm()">
+                            <span class="glyphicon glyphicon-plus"></span> Add College
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create College Form -->
+        <div class="panel-body create-form" ng-if="c.showForm">
+            <h5><span class="glyphicon glyphicon-plus-sign"></span> Create New College</h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" ng-model="c.newCollege.name" placeholder="College Name">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Code <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" ng-model="c.newCollege.code" placeholder="e.g., MIT">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Email Domain</label>
+                        <input type="text" class="form-control" ng-model="c.newCollege.email_domain" placeholder="e.g., mit.edu">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Website</label>
+                        <input type="text" class="form-control" ng-model="c.newCollege.website" placeholder="https://...">
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" class="form-control" ng-model="c.newCollege.address" placeholder="Full address">
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-success" ng-click="c.createCollege()" ng-disabled="c.submitting">
+                    <span class="glyphicon glyphicon-ok"></span> Create College
+                </button>
+                <button type="button" class="btn btn-default" ng-click="c.toggleForm()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- Colleges Table -->
+        <div class="panel-body" ng-if="c.data.colleges.length === 0">
+            <div class="empty-state text-center">
+                <span class="glyphicon glyphicon-inbox empty-icon"></span>
+                <p class="text-muted">No colleges found.</p>
+            </div>
+        </div>
+
+        <table class="table table-striped table-hover" ng-if="c.data.colleges.length > 0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Code</th>
+                    <th>Email Domain</th>
+                    <th>Status</th>
+                    <th>Clubs</th>
+                    <th>Events</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="college in c.data.colleges track by college.sys_id">
+                    <td><strong>{{college.name}}</strong></td>
+                    <td>{{college.code}}</td>
+                    <td>{{college.email_domain}}</td>
+                    <td>
+                        <span class="label" ng-class="{
+                            'label-warning': college.status === 'pending',
+                            'label-success': college.status === 'verified',
+                            'label-danger': college.status === 'rejected',
+                            'label-default': college.status === 'suspended'
+                        }">{{college.status}}</span>
+                    </td>
+                    <td>{{college.clubs_count}}</td>
+                    <td>{{college.events_count}}</td>
+                    <td>
+                        <button type="button" class="btn btn-xs btn-success" ng-if="college.status !== 'verified'" ng-click="c.verifyCollege(college)" ng-disabled="c.submitting">
+                            <span class="glyphicon glyphicon-ok"></span> Verify
+                        </button>
+                        <button type="button" class="btn btn-xs btn-warning" ng-if="college.status !== 'suspended'" ng-click="c.suspendCollege(college)" ng-disabled="c.submitting">
+                            <span class="glyphicon glyphicon-pause"></span> Suspend
+                        </button>
+                        <button type="button" class="btn btn-xs btn-danger" ng-if="college.status !== 'rejected'" ng-click="c.rejectCollege(college)" ng-disabled="c.submitting">
+                            <span class="glyphicon glyphicon-remove"></span> Reject
+                        </button>
+                        <span ng-if="college.status === 'verified'" class="text-muted action-na">—</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

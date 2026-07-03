@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_2097092_linq.LinqQRHelper</api_name>
+        <caller_access/>
+        <client_callable>true</client_callable>
+        <description>QR token generation and validation helper for LINQ attendance system</description>
+        <mobile_callable>false</mobile_callable>
+        <name>LinqQRHelper</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var LinqQRHelper = Class.create();
+LinqQRHelper.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    initialize: function() {},
+
+    generateToken: function(studentSysId, eventSysId) {
+        var gdt = new GlideDateTime();
+        var raw = studentSysId + '_' + eventSysId + '_' + gdt.getNumericValue();
+        var digest = new GlideDigest();
+        return digest.getMD5Base64(raw);
+    },
+
+    validateToken: function(token) {
+        if (!token) {
+            token = this.getParameter('sysparm_token');
+        }
+        var gr = new GlideRecord('x_2097092_linq_registration');
+        gr.addQuery('qr_token', token);
+        gr.addQuery('status', 'registered');
+        gr.query();
+        if (gr.next()) {
+            return JSON.stringify({
+                valid: true,
+                registrationId: gr.getUniqueValue(),
+                studentName: gr.student.getDisplayValue(),
+                eventName: gr.event.getDisplayValue()
+            });
+        }
+        return JSON.stringify({
+            valid: false,
+            message: 'Invalid or already used QR code.'
+        });
+    },
+
+    type: 'LinqQRHelper'
+});
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 08:00:20</sys_created_on>
+        <sys_id>a07ef42df6bb4a659542d8168379e74f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LinqQRHelper</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sys_script_include_a07ef42df6bb4a659542d8168379e74f</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 08:00:20</sys_updated_on>
+    </sys_script_include>
+</record_update>

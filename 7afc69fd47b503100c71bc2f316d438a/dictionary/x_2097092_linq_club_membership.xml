@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="10acbf41fa414ab48c817fbb58416117" label="Club Membership" name="x_2097092_linq_club_membership" type="collection">
+        <element choice="1" label="Role" max_length="40" name="role" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="President" sequence="0" value="president"/>
+                <element inactive_on_update="false" label="Treasurer" sequence="3" value="treasurer"/>
+                <element inactive_on_update="false" label="Faculty Coordinator" sequence="5" value="faculty_coordinator"/>
+                <element inactive_on_update="false" label="Vice President" sequence="1" value="vice_president"/>
+                <element inactive_on_update="false" label="Member" sequence="4" value="member"/>
+                <element inactive_on_update="false" label="Secretary" sequence="2" value="secretary"/>
+            </choice>
+        </element>
+        <element label="Joined On" max_length="40" name="joined_on" type="glide_date"/>
+        <element label="Member" mandatory="true" max_length="32" name="member" reference="sys_user" type="reference"/>
+        <element choice="1" default="active" label="Status" max_length="40" name="status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Inactive" sequence="1" value="inactive"/>
+                <element inactive_on_update="false" label="Active" sequence="0" value="active"/>
+            </choice>
+        </element>
+        <element label="Club" mandatory="true" max_length="32" name="club" reference="x_2097092_linq_club" type="reference"/>
+        <element label="Left On" max_length="40" name="left_on" type="glide_date"/>
+        <index name="index">
+            <element name="club"/>
+        </index>
+        <index name="index2">
+            <element name="member"/>
+        </index>
+    </element>
+</database>

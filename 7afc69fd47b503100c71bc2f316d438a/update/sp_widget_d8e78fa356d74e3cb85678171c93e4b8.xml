@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($scope) {
+    var c = this;
+    c.submitting = false;
+    c.formData = {};
+
+    c.getOptions = function(optStr) {
+        if (!optStr) return [];
+        return optStr.split(',').map(function(o) {
+            return o.trim();
+        });
+    };
+
+    c.register = function() {
+        if (c.submitting) return;
+        c.submitting = true;
+        c.data.errorMsg = '';
+        c.data.success = false;
+
+        c.server.get({
+            action: 'register',
+            event_id: c.data.event.sys_id,
+            formData: c.formData
+        }).then(function(r) {
+            c.data = r.data;
+            c.submitting = false;
+        }, function() {
+            c.data.errorMsg = 'Network error. Please try again.';
+            c.submitting = false;
+        });
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.sp-card {
+    border: 1px solid $border-tertiary;
+    border-radius: $border-radius-large;
+    box-shadow: 0 1px 4px rgba($text-color, 0.07);
+    background: $background-primary;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+.sp-card-header {
+    padding: 16px 24px;
+    background: $background-primary;
+    border-bottom: 1px solid $border-tertiary;
+}
+.sp-card-title {
+    font-size: $font-size-large;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+}
+.sp-card-title .glyphicon {
+    margin-right: 8px;
+    color: $brand-primary;
+}
+.sp-card-body {
+    padding: 24px;
+}
+.sp-event-meta p {
+    margin-bottom: 8px;
+    color: $text-secondary;
+    font-size: $font-size-base;
+}
+.sp-event-meta .glyphicon {
+    margin-right: 8px;
+    color: $brand-primary;
+    font-size: 14px;
+}
+.sp-input {
+    height: $input-height-base;
+    border: 1px solid $border-tertiary;
+    border-radius: $border-radius-base;
+    padding: 0 12px;
+    font-size: $font-size-base;
+    color: $text-color;
+    background: $background-primary;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    width: 100%;
+    &amp;:focus {
+        border-color: $brand-primary;
+        box-shadow: 0 0 0 3px rgba($brand-primary, 0.15);
+        outline: none;
+    }
+}
+.sp-textarea {
+    border-radius: $border-radius-base;
+    border: 1px solid $border-tertiary;
+    padding: 12px;
+    font-size: $font-size-base;
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.15s;
+    &amp;:focus {
+        border-color: $brand-primary;
+        box-shadow: 0 0 0 3px rgba($brand-primary, 0.15);
+        outline: none;
+    }
+}
+.sp-btn-primary {
+    height: 44px;
+    padding: 0 20px;
+    border-radius: $border-radius-base;
+    font-size: $font-size-base;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+    border: none;
+    background: $brand-primary;
+    color: $btn-primary-color;
+    &amp;:hover:not(:disabled) {
+        background: $brand-primary-dark;
+        box-shadow: 0 2px 8px rgba($brand-primary, 0.3);
+        color: $btn-primary-color;
+    }
+    &amp;:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+}
+.sp-btn-secondary {
+    background: $background-primary;
+    border: 1px solid $border-tertiary;
+    color: $text-color;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: $border-radius-base;
+    font-size: $font-size-base;
+    display: inline-flex;
+    align-items: center;
+    &amp;:hover {
+        background: $background-secondary;
+    }
+}
+.sp-btn-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+@keyframes sp-spin {
+    to { transform: rotate(360deg); }
+}
+.sp-spin {
+    animation: sp-spin 0.8s linear infinite;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-event-registration</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>LINQ Event Registration</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    data.event = null;
+    data.fields = [];
+    data.message = '';
+    data.success = false;
+    data.errorMsg = '';
+
+    try {
+        // Handle registration action
+        if (input && input.action === 'register') {
+            var regGr = new GlideRecord('x_2097092_linq_registration');
+            regGr.initialize();
+            regGr.setValue('event', input.event_id);
+            regGr.setValue('student', gs.getUserID());
+            regGr.setValue('custom_field_data', JSON.stringify(input.formData));
+            regGr.setValue('status', 'confirmed');
+            regGr.setValue('registration_date', new GlideDateTime().getValue());
+            var regId = regGr.insert();
+
+            if (regId) {
+                data.success = true;
+                data.message = 'Registration successful!';
+                data.reg_id = regId + '';
+                // Fetch qr_token for the new registration
+                var newReg = new GlideRecord('x_2097092_linq_registration');
+                if (newReg.get(regId)) {
+                    data.qr_token = newReg.getValue('qr_token') + '';
+                }
+            } else {
+                data.errorMsg = 'Registration failed. Please try again.';
+            }
+            return;
+        }
+
+        // Initial load — get event and form fields
+        var eventId = $sp.getParameter('event_id');
+        if (!eventId) {
+            data.errorMsg = 'No event specified.';
+            return;
+        }
+
+        var eventGr = new GlideRecord('x_2097092_linq_event');
+        if (!eventGr.get(eventId)) {
+            data.errorMsg = 'Event not found.';
+            return;
+        }
+
+        data.event = {
+            sys_id: eventGr.getUniqueValue(),
+            title: eventGr.getValue('title') + '',
+            event_date: eventGr.getDisplayValue('event_date') + '',
+            venue: eventGr.getValue('venue') + '',
+            club_name: eventGr.getDisplayValue('club') + ''
+        };
+
+        // Get form template fields
+        var ftGr = new GlideRecord('x_2097092_linq_form_template');
+        ftGr.addQuery('event', eventId);
+        ftGr.orderBy('sort_order');
+        ftGr.setLimit(30);
+        ftGr.query();
+
+        while (ftGr.next()) {
+            var field = {
+                sys_id: ftGr.getUniqueValue(),
+                field_label: ftGr.getValue('field_label') + '',
+                field_type: ftGr.getValue('field_type') + '',
+                is_required: ftGr.getValue('is_required') + '' === '1',
+                placeholder_text: ftGr.getValue('placeholder_text') + '',
+                field_options: ftGr.getValue('field_options') + ''
+            };
+            data.fields.push(field);
+        }
+    } catch (e) {
+        gs.error('linq-event-registration error: ' + e.message);
+        data.errorMsg = 'An error occurred.';
+    }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 07:59:50</sys_created_on>
+        <sys_id>d8e78fa356d74e3cb85678171c93e4b8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ Event Registration</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_d8e78fa356d74e3cb85678171c93e4b8</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 07:59:50</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid">
+    <!-- Success state -->
+    <div ng-if="c.data.success" class="text-center" style="padding: 48px 24px;">
+        <div class="alert alert-success" role="alert">
+            <span class="glyphicon glyphicon-ok-circle"></span>
+            <strong>Success!</strong> {{c.data.message}}
+        </div>
+        <a class="btn btn-primary sp-btn-primary" href="?id=linq_qr_pass&reg_id={{c.data.reg_id}}">
+            <span class="glyphicon glyphicon-qrcode"></span> View My QR Pass
+        </a>
+    </div>
+
+    <!-- Registration form -->
+    <div ng-if="!c.data.success">
+        <div class="alert alert-danger" ng-if="c.data.errorMsg" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            {{c.data.errorMsg}}
+        </div>
+
+        <div ng-if="c.data.event" class="panel panel-default sp-card">
+            <div class="panel-heading sp-card-header">
+                <h3 class="panel-title sp-card-title">
+                    <span class="glyphicon glyphicon-edit"></span>
+                    Register for: {{c.data.event.title}}
+                </h3>
+            </div>
+            <div class="panel-body sp-card-body">
+                <div class="sp-event-meta">
+                    <p><span class="glyphicon glyphicon-time"></span> {{c.data.event.event_date}}</p>
+                    <p><span class="glyphicon glyphicon-map-marker"></span> {{c.data.event.venue}}</p>
+                    <p><span class="glyphicon glyphicon-briefcase"></span> {{c.data.event.club_name}}</p>
+                </div>
+
+                <hr>
+
+                <!-- Dynamic form fields -->
+                <div class="form-group" ng-repeat="field in c.data.fields track by field.sys_id"
+                     ng-class="{'has-error': field.is_required && !c.formData[field.field_label]}">
+                    <label class="control-label" for="field_{{$index}}">
+                        {{field.field_label}}
+                        <span class="text-danger" ng-if="field.is_required">*</span>
+                    </label>
+
+                    <!-- Text input -->
+                    <input ng-if="field.field_type === 'text'"
+                           type="text"
+                           class="form-control sp-input"
+                           id="field_{{$index}}"
+                           ng-model="c.formData[field.field_label]"
+                           placeholder="{{field.placeholder_text}}" />
+
+                    <!-- URL input -->
+                    <input ng-if="field.field_type === 'url'"
+                           type="url"
+                           class="form-control sp-input"
+                           id="field_{{$index}}"
+                           ng-model="c.formData[field.field_label]"
+                           placeholder="{{field.placeholder_text}}" />
+
+                    <!-- Textarea -->
+                    <textarea ng-if="field.field_type === 'textarea'"
+                              class="form-control sp-textarea"
+                              id="field_{{$index}}"
+                              ng-model="c.formData[field.field_label]"
+                              placeholder="{{field.placeholder_text}}"
+                              rows="3"></textarea>
+
+                    <!-- Dropdown -->
+                    <select ng-if="field.field_type === 'dropdown'"
+                            class="form-control sp-input"
+                            id="field_{{$index}}"
+                            ng-model="c.formData[field.field_label]">
+                        <option value="">— Select —</option>
+                        <option ng-repeat="opt in c.getOptions(field.field_options) track by $index"
+                                value="{{opt}}">{{opt}}</option>
+                    </select>
+                </div>
+
+                <div class="sp-btn-group">
+                    <button type="button"
+                            class="btn btn-primary sp-btn-primary"
+                            ng-click="c.register()"
+                            ng-disabled="c.submitting">
+                        <span class="glyphicon glyphicon-ok" ng-if="!c.submitting"></span>
+                        <span class="glyphicon glyphicon-refresh sp-spin" ng-if="c.submitting"></span>
+                        {{c.submitting ? 'Submitting...' : 'Submit Registration'}}
+                    </button>
+                    <a class="btn btn-default sp-btn-secondary" href="?id=linq_home">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

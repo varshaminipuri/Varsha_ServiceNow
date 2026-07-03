@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($scope, $timeout) {
+    var c = this;
+    c.scanning = false;
+    c.scannerInstance = null;
+    c.lastResult = null;
+    c.validating = false;
+
+    c.startScanner = function() {
+        if (c.scanning) return;
+        c.scanning = true;
+        c.lastResult = null;
+
+        $timeout(function() {
+            if (typeof Html5Qrcode !== 'undefined') {
+                c.scannerInstance = new Html5Qrcode('linq-scanner-view');
+                c.scannerInstance.start(
+                    { facingMode: 'environment' },
+                    { fps: 10, qrbox: { width: 250, height: 250 } },
+                    function(decodedText) {
+                        // On successful scan
+                        c.stopScanner();
+                        $scope.$apply(function() {
+                            c.validateToken(decodedText);
+                        });
+                    },
+                    function() {
+                        // QR code parse error — ignore, keep scanning
+                    }
+                );
+            }
+        }, 300);
+    };
+
+    c.stopScanner = function() {
+        if (c.scannerInstance) {
+            c.scannerInstance.stop().then(function() {
+                c.scannerInstance.clear();
+            }).catch(function() {
+                // Ignore stop errors
+            });
+        }
+        c.scanning = false;
+    };
+
+    c.validateToken = function(token) {
+        c.validating = true;
+        c.lastResult = null;
+        c.server.get({
+            action: 'validate_qr',
+            token: token
+        }).then(function(r) {
+            c.lastResult = r.data.scanResult;
+            c.validating = false;
+        }, function() {
+            c.lastResult = { valid: false, message: 'Network error. Please try again.' };
+            c.validating = false;
+        });
+    };
+
+    c.scanAgain = function() {
+        c.lastResult = null;
+        c.startScanner();
+    };
+
+    // Cleanup on widget destroy
+    $scope.$on('$destroy', function() {
+        c.stopScanner();
+    });
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.sp-card {
+    border: 1px solid $border-tertiary;
+    border-radius: $border-radius-large;
+    box-shadow: 0 1px 4px rgba($text-color, 0.07);
+    background: $background-primary;
+    overflow: hidden;
+    margin-bottom: 24px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.sp-card-header {
+    padding: 16px 24px;
+    background: $background-primary;
+    border-bottom: 1px solid $border-tertiary;
+}
+.sp-card-title {
+    font-size: $font-size-large;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+}
+.sp-card-title .glyphicon {
+    margin-right: 8px;
+    color: $brand-primary;
+}
+.sp-card-body {
+    padding: 24px;
+}
+.sp-scanner-view {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto 16px;
+    border-radius: $border-radius-base;
+    overflow: hidden;
+}
+.sp-scanner-controls {
+    margin-top: 16px;
+}
+.sp-validating {
+    padding: 32px 0;
+}
+.sp-validating .glyphicon {
+    font-size: 32px;
+    color: $brand-primary;
+    display: block;
+    margin-bottom: 12px;
+}
+.sp-result {
+    padding: 32px 0;
+}
+.sp-result-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+}
+.sp-result h4 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.sp-result-valid .sp-result-icon,
+.sp-result-valid h4 {
+    color: $brand-success;
+}
+.sp-result-invalid .sp-result-icon,
+.sp-result-invalid h4 {
+    color: $brand-danger;
+}
+.sp-btn-primary {
+    height: 44px;
+    padding: 0 20px;
+    border-radius: $border-radius-base;
+    font-size: $font-size-base;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+    border: none;
+    background: $brand-primary;
+    color: $btn-primary-color;
+    &amp;:hover:not(:disabled) {
+        background: $brand-primary-dark;
+        box-shadow: 0 2px 8px rgba($brand-primary, 0.3);
+        color: $btn-primary-color;
+    }
+}
+.sp-btn-secondary {
+    background: $background-primary;
+    border: 1px solid $border-tertiary;
+    color: $text-color;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: $border-radius-base;
+    font-size: $font-size-base;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    &amp;:hover {
+        background: $background-secondary;
+    }
+}
+@keyframes sp-spin {
+    to { transform: rotate(360deg); }
+}
+.sp-spin {
+    animation: sp-spin 0.8s linear infinite;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-qr-scanner</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>LINQ QR Scanner</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    data.accessDenied = false;
+    data.scanResult = null;
+    data.errorMsg = '';
+
+    try {
+        // Handle QR validation action
+        if (input && input.action === 'validate_qr') {
+            var helper = new global.LinqQRHelper();
+            var result = helper.validateToken(input.token);
+
+            if (result && result.valid) {
+                // Insert attendance record
+                var attGr = new GlideRecord('x_2097092_linq_attendance');
+                attGr.initialize();
+                attGr.setValue('event', result.event_id);
+                attGr.setValue('registration', result.registration_id);
+                attGr.setValue('student', result.student_id);
+                attGr.setValue('status', 'present');
+                attGr.setValue('scan_timestamp', new GlideDateTime().getValue());
+                attGr.setValue('verified_by', gs.getUserID());
+                attGr.insert();
+
+                data.scanResult = {
+                    valid: true,
+                    studentName: result.student_name + '',
+                    eventTitle: result.event_title + ''
+                };
+            } else {
+                data.scanResult = {
+                    valid: false,
+                    message: (result && result.message) ? result.message + '' : 'Invalid or expired QR token.'
+                };
+            }
+            return;
+        }
+
+        // Initial load — check access
+        var userId = gs.getUserID();
+        var memGr = new GlideRecord('x_2097092_linq_club_membership');
+        memGr.addQuery('member', userId);
+        memGr.addQuery('role', 'IN', 'president,secretary');
+        memGr.addQuery('status', 'active');
+        memGr.setLimit(1);
+        memGr.query();
+
+        if (!memGr.hasNext()) {
+            data.accessDenied = true;
+            return;
+        }
+    } catch (e) {
+        gs.error('linq-qr-scanner error: ' + e.message);
+        data.errorMsg = 'An error occurred.';
+    }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 07:59:50</sys_created_on>
+        <sys_id>810af613e44741138e2693dcd559bb0d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ QR Scanner</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_810af613e44741138e2693dcd559bb0d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 07:59:50</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid">
+    <!-- Access denied -->
+    <div ng-if="c.data.accessDenied" class="alert alert-warning" role="alert">
+        <span class="glyphicon glyphicon-lock"></span>
+        <strong>Access Denied.</strong> Only club presidents and secretaries can use the QR scanner.
+    </div>
+
+    <!-- Scanner interface -->
+    <div ng-if="!c.data.accessDenied">
+        <div class="panel panel-default sp-card">
+            <div class="panel-heading sp-card-header">
+                <h3 class="panel-title sp-card-title">
+                    <span class="glyphicon glyphicon-camera"></span>
+                    QR Attendance Scanner
+                </h3>
+            </div>
+            <div class="panel-body sp-card-body text-center">
+                <!-- Scanner viewport -->
+                <div id="linq-scanner-view" class="sp-scanner-view" ng-show="c.scanning"></div>
+
+                <!-- Start button -->
+                <div ng-if="!c.scanning && !c.lastResult && !c.validating">
+                    <p class="text-muted">Tap below to start scanning student QR passes.</p>
+                    <button type="button" class="btn btn-primary sp-btn-primary" ng-click="c.startScanner()">
+                        <span class="glyphicon glyphicon-camera"></span> Start Scanner
+                    </button>
+                </div>
+
+                <!-- Validating -->
+                <div ng-if="c.validating" class="sp-validating">
+                    <span class="glyphicon glyphicon-refresh sp-spin"></span>
+                    <p class="text-muted">Validating QR code...</p>
+                </div>
+
+                <!-- Scan result: VALID -->
+                <div ng-if="c.lastResult && c.lastResult.valid" class="sp-result sp-result-valid">
+                    <span class="glyphicon glyphicon-ok-circle sp-result-icon"></span>
+                    <h4>VALID</h4>
+                    <p><strong>{{c.lastResult.studentName}}</strong></p>
+                    <p class="text-muted">{{c.lastResult.eventTitle}}</p>
+                    <button type="button" class="btn btn-primary sp-btn-primary" ng-click="c.scanAgain()">
+                        <span class="glyphicon glyphicon-camera"></span> Scan Next
+                    </button>
+                </div>
+
+                <!-- Scan result: INVALID -->
+                <div ng-if="c.lastResult && !c.lastResult.valid" class="sp-result sp-result-invalid">
+                    <span class="glyphicon glyphicon-remove-circle sp-result-icon"></span>
+                    <h4>INVALID</h4>
+                    <p class="text-muted">{{c.lastResult.message}}</p>
+                    <button type="button" class="btn btn-primary sp-btn-primary" ng-click="c.scanAgain()">
+                        <span class="glyphicon glyphicon-camera"></span> Scan Again
+                    </button>
+                </div>
+
+                <!-- Stop button while scanning -->
+                <div ng-if="c.scanning" class="sp-scanner-controls">
+                    <button type="button" class="btn btn-default sp-btn-secondary" ng-click="c.stopScanner()">
+                        <span class="glyphicon glyphicon-stop"></span> Stop Scanner
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

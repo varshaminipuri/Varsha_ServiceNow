@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_widget_dependency">
+    <m2m_sp_widget_dependency action="INSERT_OR_UPDATE">
+        <sp_dependency display_value="LINQ QRCode.js">6c1f6a84c6c941ffb9ba7ee7bf688199</sp_dependency>
+        <sp_widget display_value="LINQ QR Pass">a9d3691ec9724142a26df8345260a792</sp_widget>
+        <sys_class_name>m2m_sp_widget_dependency</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 07:59:49</sys_created_on>
+        <sys_id>86dc65b955c14f4f92280ef90e0563a8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>m2m_sp_widget_dependency_86dc65b955c14f4f92280ef90e0563a8</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 07:59:49</sys_updated_on>
+    </m2m_sp_widget_dependency>
+</record_update>

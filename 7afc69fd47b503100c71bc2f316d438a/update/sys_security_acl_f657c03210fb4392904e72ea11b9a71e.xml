@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl">
+    <sys_security_acl action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <admin_overrides>true</admin_overrides>
+        <advanced>true</advanced>
+        <applies_to/>
+        <condition/>
+        <controlled_by_refs/>
+        <decision_type>allow</decision_type>
+        <description>Event WRITE: platform_admin full, college_admin own college, club_admin own clubs</description>
+        <local_or_existing>Local</local_or_existing>
+        <name>x_2097092_linq_event</name>
+        <operation display_value="write">write</operation>
+        <script><![CDATA[
+    if (gs.hasRole('x_2097092_linq.platform_admin')) {
+      answer = true;
+    } else if (gs.hasRole('x_2097092_linq.college_admin')) {
+      // College admin writes events of their college
+      var userCollege = gs.getUser().getRecord().getValue('u_college');
+      answer = (current.getValue('college') == userCollege);
+    } else {
+      // club_admin: write events of clubs where they have active admin membership
+      var gr = new GlideRecord('x_2097092_linq_club_membership');
+      gr.addQuery('member', gs.getUserID());
+      gr.addQuery('club', current.getValue('club'));
+      gr.addQuery('role', 'admin');
+      gr.addQuery('status', 'active');
+      gr.query();
+      answer = gr.hasNext();
+    }
+  ]]></script>
+        <security_attribute/>
+        <sys_class_name>sys_security_acl</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 08:00:22</sys_created_on>
+        <sys_id>f657c03210fb4392904e72ea11b9a71e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_2097092_linq_event</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sys_security_acl_f657c03210fb4392904e72ea11b9a71e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 08:00:22</sys_updated_on>
+        <type display_value="record">record</type>
+    </sys_security_acl>
+</record_update>

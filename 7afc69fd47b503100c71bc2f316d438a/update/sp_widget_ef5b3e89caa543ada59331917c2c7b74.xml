@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() {
+    var c = this;
+    c.loading = false;
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.sp-card-grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+.sp-card-grid &gt; [class*="col-"] {
+    display: flex;
+    margin-bottom: 24px;
+}
+.sp-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 1px solid $border-tertiary;
+    border-radius: $border-radius-large;
+    box-shadow: 0 1px 4px rgba($text-color, 0.07);
+    background: $background-primary;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+.sp-card-header {
+    padding: 16px 24px;
+    background: $background-primary;
+    border-bottom: 1px solid $border-tertiary;
+    min-height: 52px;
+    flex-shrink: 0;
+}
+.sp-card-title {
+    font-size: $font-size-large;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+}
+.sp-card-body {
+    padding: 24px;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+.sp-card-content {
+    flex: 1 1 auto;
+}
+.sp-card-content p {
+    margin-bottom: 8px;
+    color: $text-secondary;
+    font-size: $font-size-base;
+}
+.sp-card-content .glyphicon {
+    margin-right: 8px;
+    color: $brand-primary;
+    font-size: 14px;
+}
+.sp-card-bottom {
+    margin-top: auto;
+    padding-top: 16px;
+}
+.sp-btn-primary {
+    height: 44px;
+    padding: 0 20px;
+    border-radius: $border-radius-base;
+    font-size: $font-size-base;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+    border: none;
+    background: $brand-primary;
+    color: $btn-primary-color;
+    &amp;:hover:not(:disabled) {
+        background: $brand-primary-dark;
+        box-shadow: 0 2px 8px rgba($brand-primary, 0.3);
+        color: $btn-primary-color;
+    }
+}
+.sp-empty-state {
+    padding: 64px 24px;
+}
+.sp-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+    opacity: 0.35;
+    color: $text-muted;
+}
+.sp-empty-title {
+    font-size: $font-size-large;
+    font-weight: 600;
+    color: $text-color;
+    margin-bottom: 8px;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-event-listing</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>LINQ Event Listing</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    data.events = [];
+    data.message = '';
+
+    try {
+        if (input && input.action === 'refresh') {
+            // Same logic as initial load — allows client refresh
+        }
+
+        var userId = gs.getUserID();
+        var userGr = new GlideRecord('sys_user');
+        var userCollege = '';
+        if (userGr.get(userId)) {
+            userCollege = userGr.getValue('u_college') + '';
+        }
+
+        var today = new GlideDateTime().getLocalDate().toString();
+
+        var gr = new GlideRecord('x_2097092_linq_event');
+        gr.addQuery('status', 'live');
+        gr.addQuery('event_date', '>=', today);
+        gr.orderBy('event_date');
+        gr.setLimit(50);
+        gr.query();
+
+        while (gr.next()) {
+            var scope = gr.getValue('scope') + '';
+            var eventCollege = gr.getValue('college') + '';
+
+            // Filter: college_only events show only if user belongs to that college
+            if (scope === 'college_only' && eventCollege !== userCollege) {
+                continue;
+            }
+
+            data.events.push({
+                sys_id: gr.getUniqueValue(),
+                title: gr.getValue('title') + '',
+                club_name: gr.getDisplayValue('club') + '',
+                event_date: gr.getDisplayValue('event_date') + '',
+                venue: gr.getValue('venue') + '',
+                scope: scope
+            });
+        }
+    } catch (e) {
+        gs.error('linq-event-listing error: ' + e.message);
+        data.message = 'An error occurred loading events.';
+    }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 07:59:50</sys_created_on>
+        <sys_id>ef5b3e89caa543ada59331917c2c7b74</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ Event Listing</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_ef5b3e89caa543ada59331917c2c7b74</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 07:59:50</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid">
+    <div class="page-header">
+        <h2><span class="glyphicon glyphicon-calendar"></span> Browse Events</h2>
+        <p class="text-muted">Discover and register for upcoming college club events</p>
+    </div>
+
+    <div class="alert alert-danger" ng-if="c.data.message" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign"></span>
+        {{c.data.message}}
+    </div>
+
+    <div class="row sp-card-grid" ng-if="c.data.events.length > 0">
+        <div class="col-md-4 col-sm-6 col-xs-12" ng-repeat="event in c.data.events track by event.sys_id">
+            <div class="panel panel-default sp-card">
+                <div class="panel-heading sp-card-header">
+                    <h4 class="panel-title sp-card-title">{{event.title}}</h4>
+                </div>
+                <div class="panel-body sp-card-body">
+                    <div class="sp-card-content">
+                        <p><span class="glyphicon glyphicon-briefcase"></span> {{event.club_name}}</p>
+                        <p><span class="glyphicon glyphicon-time"></span> {{event.event_date}}</p>
+                        <p><span class="glyphicon glyphicon-map-marker"></span> {{event.venue}}</p>
+                        <p>
+                            <span class="label" ng-class="event.scope === 'inter_college' ? 'label-info' : 'label-success'">
+                                {{event.scope === 'inter_college' ? 'Inter-College' : 'My College'}}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="sp-card-bottom">
+                        <a class="btn btn-primary sp-btn-primary" href="?id=linq_registration&event_id={{event.sys_id}}">
+                            <span class="glyphicon glyphicon-edit"></span> Register
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sp-empty-state text-center" ng-if="c.data.events.length === 0 && !c.loading">
+        <span class="glyphicon glyphicon-calendar sp-empty-icon"></span>
+        <h4 class="sp-empty-title">No upcoming events</h4>
+        <p class="text-muted">Check back later for new events from your college clubs.</p>
+    </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

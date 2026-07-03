@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function($timeout) {
+    var c = this;
+
+    if (c.data.qr_token) {
+        $timeout(function() {
+            var qrElement = document.getElementById('linq-qr-code');
+            if (qrElement && typeof QRCode !== 'undefined') {
+                new QRCode(qrElement, {
+                    text: c.data.qr_token,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+        }, 500);
+    }
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.sp-card {
+    border: 1px solid $border-tertiary;
+    border-radius: $border-radius-large;
+    box-shadow: 0 1px 4px rgba($text-color, 0.07);
+    background: $background-primary;
+    overflow: hidden;
+    margin-bottom: 24px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.sp-card-header {
+    padding: 16px 24px;
+    background: $background-primary;
+    border-bottom: 1px solid $border-tertiary;
+}
+.sp-card-title {
+    font-size: $font-size-large;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+}
+.sp-card-title .glyphicon {
+    margin-right: 8px;
+    color: $brand-primary;
+}
+.sp-card-body {
+    padding: 24px;
+}
+.sp-pass-details h4 {
+    font-size: 22px;
+    font-weight: 600;
+    color: $text-color;
+    margin-bottom: 12px;
+}
+.sp-pass-details p {
+    margin-bottom: 8px;
+    color: $text-secondary;
+    font-size: $font-size-base;
+}
+.sp-pass-details .glyphicon {
+    margin-right: 8px;
+    color: $brand-primary;
+    font-size: 14px;
+}
+.sp-qr-container {
+    padding: 24px 0;
+}
+#linq-qr-code {
+    display: inline-block;
+    padding: 16px;
+    background: $background-primary;
+    border: 2px solid $border-tertiary;
+    border-radius: $border-radius-large;
+}
+.sp-qr-hint {
+    margin-top: 16px;
+    font-size: $font-size-small;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>linq-qr-pass</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
+        <name>LINQ QR Pass</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    data.qr_token = '';
+    data.studentName = '';
+    data.eventTitle = '';
+    data.eventDate = '';
+    data.venue = '';
+    data.errorMsg = '';
+    data.accessDenied = false;
+
+    try {
+        var regId = $sp.getParameter('reg_id');
+        if (!regId) {
+            data.errorMsg = 'No registration specified.';
+            return;
+        }
+
+        var regGr = new GlideRecord('x_2097092_linq_registration');
+        if (!regGr.get(regId)) {
+            data.errorMsg = 'Registration not found.';
+            return;
+        }
+
+        // Access control: only the student who registered can view their pass
+        var studentId = regGr.getValue('student') + '';
+        if (studentId !== gs.getUserID()) {
+            data.accessDenied = true;
+            data.errorMsg = 'You do not have access to this QR pass.';
+            return;
+        }
+
+        data.qr_token = regGr.getValue('qr_token') + '';
+        data.studentName = regGr.getDisplayValue('student') + '';
+
+        // Get event details
+        var eventGr = new GlideRecord('x_2097092_linq_event');
+        if (eventGr.get(regGr.getValue('event'))) {
+            data.eventTitle = eventGr.getValue('title') + '';
+            data.eventDate = eventGr.getDisplayValue('event_date') + '';
+            data.venue = eventGr.getValue('venue') + '';
+        }
+    } catch (e) {
+        gs.error('linq-qr-pass error: ' + e.message);
+        data.errorMsg = 'An error occurred loading your pass.';
+    }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-07-01 07:59:50</sys_created_on>
+        <sys_id>a9d3691ec9724142a26df8345260a792</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>LINQ QR Pass</sys_name>
+        <sys_package display_value="linq" source="x_2097092_linq">7afc69fd47b503100c71bc2f316d438a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="linq">7afc69fd47b503100c71bc2f316d438a</sys_scope>
+        <sys_update_name>sp_widget_a9d3691ec9724142a26df8345260a792</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-07-01 07:59:50</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid">
+    <div class="alert alert-danger" ng-if="c.data.errorMsg" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign"></span>
+        {{c.data.errorMsg}}
+    </div>
+
+    <div ng-if="c.data.qr_token && !c.data.accessDenied" class="panel panel-default sp-card">
+        <div class="panel-heading sp-card-header">
+            <h3 class="panel-title sp-card-title">
+                <span class="glyphicon glyphicon-qrcode"></span>
+                Your Event Pass
+            </h3>
+        </div>
+        <div class="panel-body sp-card-body text-center">
+            <div class="sp-pass-details">
+                <h4>{{c.data.eventTitle}}</h4>
+                <p><span class="glyphicon glyphicon-time"></span> {{c.data.eventDate}}</p>
+                <p><span class="glyphicon glyphicon-map-marker"></span> {{c.data.venue}}</p>
+                <p><span class="glyphicon glyphicon-user"></span> {{c.data.studentName}}</p>
+            </div>
+            <hr>
+            <div class="sp-qr-container">
+                <div id="linq-qr-code"></div>
+                <p class="text-muted sp-qr-hint">Show this QR code at the event entrance</p>
+            </div>
+        </div>
+    </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>
