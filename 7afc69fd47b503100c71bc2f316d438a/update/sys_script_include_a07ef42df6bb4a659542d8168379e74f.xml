@@ -14,6 +14,7 @@ LinqQRHelper.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
     initialize: function() {
         // Test comment for GitHub integration
         // Second test comment to trigger a new push
+        // Third test comment - checking if checksum bypass works!
     },
 
     generateToken: function(studentSysId, eventSysId) {
